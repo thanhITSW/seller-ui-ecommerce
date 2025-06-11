@@ -1,0 +1,132 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+1. API Related Files
+API endpoints ➝ src/api/
+
+Ví dụ: userApi.ts
+
+2. Components
+Reusable components ➝ src/components/
+
+Structure for each component:
+
+src/components/ComponentName/
+├── ComponentName.tsx
+├── ComponentName.module.scss
+└── ComponentName.types.ts (if needed)
+3. Pages
+Page components ➝ src/pages/
+
+Structure for each page:
+
+css
+src/pages/PageName/
+├── PageName.tsx
+├── components/
+│   └── [PageSpecificComponent].tsx
+├── styles/
+│   └── PageName.module.scss
+└── types/
+    └── PageName.types.ts
+4. Styles
+Global styles ➝ src/styles/
+
+Component styles ➝ ComponentName.module.scss (in respective folder)
+
+Page styles ➝ src/styles/PageName/PageName.module.scss
+
+Use SCSS modules (.module.scss) for scoping
+
+5. Types
+Global types ➝ src/types/
+
+Ví dụ: user.types.ts
+
+Component-specific types ➝ ComponentName.types.ts
+
+Page-specific types ➝ src/types/PageName/PageName.types.ts
+
+6. Redux
+Reducers ➝ src/redux/reducers/
+
+Ví dụ: userReducer.ts
+
+Actions ➝ src/redux/actions/
+
+Ví dụ: authActions.ts
+
+Selectors ➝ src/redux/selectors/
+
+Ví dụ: productSelectors.ts
+
+Store config ➝ src/redux/store/storeConfig.ts
+
+7. Contexts
+Context files ➝ src/contexts/
+
+Structure:
+
+src/contexts/ContextName/
+├── ContextNameProvider.tsx
+├── ContextName.types.ts
+└── ContextName.reducer.ts (if needed)
+8. Hooks
+Custom hooks ➝ src/hooks/
+
+Ví dụ:
+
+useAuth.ts
+
+usePagination.ts
+
+Group related hooks in subdirectories if needed
+
+9. Constants
+Constants ➝ src/constants/
+
+Ví dụ:
+
+appConstants.ts
+
+errorMessages.ts
+
+routes.ts
+
+10. Configurations
+App configs ➝ src/configs/
+
+Ví dụ: themeConfig.ts
+
+Environment variables ➝ src/configs/env/
+
+Ví dụ: dev.env.ts
+
+Feature flags ➝ src/configs/features/
+
+Ví dụ: featureToggle.ts
+
+11. i18n
+Translation files ➝ src/i18n/locales/
+
+Ví dụ: en.json, vi.json
+
+Language config ➝ src/i18n/config/i18nConfig.ts
+
+i18n utilities ➝ src/i18n/utils/i18nUtils.ts
+
+12. Assets
+Images ➝ src/assets/images/
+
+Icons ➝ src/assets/icons/
+
+Fonts ➝ src/assets/fonts/
+
+
+
+
+
+
+Media ➝ src/assets/media/

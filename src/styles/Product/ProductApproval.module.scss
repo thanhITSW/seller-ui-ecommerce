@@ -1,0 +1,36 @@
+.product-approval-page {
+    padding: 24px;
+    background: var(--background-color);
+    min-height: 100vh;
+    width: 100%;
+
+    :global(.ant-table-wrapper) {
+        background: var(--background-color);
+        border-radius: 8px;
+        overflow: hidden;
+    }
+
+    :global(.ant-table) {
+        background: transparent;
+    }
+
+    :global(.ant-table-thead > tr > th) {
+        background: var(--background-color);
+        color: var(--text-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    :global(.ant-table-tbody > tr > td) {
+        background: var(--background-color);
+        color: var(--text-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    :global(.ant-table-tbody > tr:hover > td) {
+        background: var(--hover-color);
+    }
+
+    @media (max-width: 768px) {
+        padding: 16px;
+    }
+}

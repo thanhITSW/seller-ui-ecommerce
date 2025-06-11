@@ -1,0 +1,165 @@
+.product-type-page {
+    padding: 24px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-color);
+        }
+    }
+
+    .product-type-selector {
+        margin-bottom: 24px;
+
+        .ant-select {
+            width: 200px;
+        }
+    }
+
+    .ant-tabs {
+        background-color: var(--card-background);
+        padding: 24px;
+        border-radius: 8px;
+        box-shadow: var(--box-shadow);
+
+        .ant-tabs-tab {
+            color: var(--text-color);
+
+            &.ant-tabs-tab-active .ant-tabs-tab-btn {
+                color: var(--primary-color);
+            }
+        }
+
+        .ant-tabs-ink-bar {
+            background-color: var(--primary-color);
+        }
+    }
+
+    .tab-header {
+        margin-bottom: 16px;
+    }
+
+    .ant-table-wrapper {
+        background-color: var(--card-background);
+        border-radius: 8px;
+    }
+
+    .ant-table {
+        background-color: var(--card-background);
+        color: var(--text-color);
+
+        .ant-table-thead>tr>th {
+            background-color: var(--table-header-background);
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr>td {
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr:hover>td {
+            background-color: var(--table-row-hover);
+        }
+    }
+
+    .ant-space {
+        .ant-btn {
+            margin-right: 8px;
+        }
+    }
+
+    .ant-tag {
+        margin-right: 0;
+    }
+
+    .ant-modal {
+        .ant-modal-content {
+            background-color: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .ant-modal-header {
+            background-color: var(--card-background);
+            border-bottom-color: var(--border-color);
+
+            .ant-modal-title {
+                color: var(--text-color);
+            }
+        }
+
+        .ant-modal-body {
+            color: var(--text-color);
+        }
+
+        .ant-modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        .ant-form-item-label>label {
+            color: var(--text-color);
+        }
+
+        .ant-input,
+        .ant-input-textarea {
+            background-color: var(--input-background);
+            color: var(--text-color);
+            border-color: var(--border-color);
+
+            &:hover,
+            &:focus {
+                border-color: var(--primary-color);
+            }
+        }
+
+        .ant-select {
+            .ant-select-selector {
+                background-color: var(--input-background);
+                border-color: var(--border-color);
+            }
+
+            .ant-select-selection-item {
+                color: var(--text-color);
+            }
+        }
+    }
+}
+
+// Responsive styles
+@media screen and (max-width: 768px) {
+    .product-type-page {
+        padding: 16px;
+
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+
+            h1 {
+                font-size: 20px;
+            }
+        }
+
+        .ant-tabs {
+            padding: 16px;
+        }
+
+        .product-type-selector {
+            width: 100%;
+
+            .ant-select {
+                width: 100% !important;
+            }
+        }
+    }
+}

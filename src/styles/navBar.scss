@@ -1,0 +1,451 @@
+// Variables
+$primary-color: #ff4d4f;
+$text-dark: #1a1a1a;
+$text-light: #666;
+$text-medium: #999;
+$white: #ffffff;
+$border-light: #f0f0f0;
+$shadow-light: rgba(0, 0, 0, 0.08);
+$shadow-medium: rgba(0, 0, 0, 0.15);
+
+// Breakpoints
+$mobile: 768px;
+$tablet: 1024px;
+$desktop: 1200px;
+
+// Navbar Base
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: $white;
+  border-bottom: 1px solid $border-light;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
+
+  &.scrolled {
+    box-shadow: 0 2px 20px $shadow-light;
+  }
+
+  .navbar-container {
+    max-width: $desktop;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 70px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+
+// Logo Section
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+  }
+
+  .logo-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, $primary-color 0%, #ff7875 100%);
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+
+    svg {
+      filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+    }
+  }
+
+  .logo-text {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .brand-name {
+      font-size: 20px;
+      font-weight: 700;
+      color: $text-dark;
+      letter-spacing: -0.5px;
+    }
+
+    .brand-badge {
+      background: $primary-color;
+      color: $white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 4px 8px;
+      border-radius: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      animation: pulse 2s infinite;
+    }
+  }
+}
+
+// Desktop Navigation
+.navbar-nav {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+
+  .nav-link {
+    position: relative;
+    color: $text-medium;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 15px;
+    transition: all 0.3s ease;
+    padding: 8px 0;
+
+    &:hover {
+      color: $text-dark;
+      text-decoration: none;
+    }
+
+    &::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, $primary-color, #ff7875);
+      transition: width 0.3s ease;
+      border-radius: 1px;
+    }
+
+    &:hover::after {
+      width: 100%;
+    }
+
+    &.active {
+      color: $primary-color;
+      font-weight: 600;
+
+      &::after {
+        width: 100%;
+      }
+    }
+  }
+}
+
+// Desktop Auth Buttons
+.navbar-auth {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+
+  .login-btn {
+    border: 1px solid $border-light;
+    color: $text-dark;
+    background: transparent;
+    border-radius: 25px;
+    height: 40px;
+    padding: 0 20px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+
+    &:hover {
+      border-color: $primary-color;
+      color: $primary-color;
+      background: rgba(255, 77, 79, 0.05);
+      transform: translateY(-1px);
+    }
+  }
+
+  .signup-btn {
+    background: $primary-color;
+    border-color: $primary-color;
+    border-radius: 25px;
+    height: 40px;
+    padding: 0 24px;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: #ff7875;
+      border-color: #ff7875;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(255, 77, 79, 0.4);
+    }
+  }
+}
+
+// Mobile Menu
+.mobile-menu-trigger {
+  display: none;
+
+  .menu-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: $text-dark;
+    transition: all 0.3s ease;
+
+    &:hover {
+      background: rgba(255, 77, 79, 0.1);
+      color: $primary-color;
+    }
+
+    .anticon {
+      font-size: 18px;
+    }
+  }
+}
+
+// Mobile Drawer
+.mobile-drawer {
+  .ant-drawer-header {
+    border-bottom: 1px solid $border-light;
+    padding: 16px 24px;
+  }
+
+  .ant-drawer-body {
+    padding: 0;
+  }
+
+  .mobile-drawer-header {
+    .navbar-logo {
+      .logo-icon {
+        width: 32px;
+        height: 32px;
+
+        svg {
+          width: 20px;
+          height: 20px;
+        }
+      }
+
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .brand-badge {
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+    }
+  }
+}
+
+.mobile-nav-content {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  .mobile-nav-links {
+    flex: 1;
+    padding: 24px 0;
+
+    .mobile-nav-link {
+      display: block;
+      padding: 16px 24px;
+      color: $text-dark;
+      text-decoration: none;
+      font-size: 16px;
+      font-weight: 500;
+      border-bottom: 1px solid $border-light;
+      transition: all 0.3s ease;
+
+      &:hover {
+        background: rgba(255, 77, 79, 0.05);
+        color: $primary-color;
+        text-decoration: none;
+        padding-left: 32px;
+      }
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+
+  .mobile-auth-buttons {
+    padding: 24px;
+    border-top: 1px solid $border-light;
+    background: rgba(250, 250, 250, 0.5);
+
+    .mobile-login-btn {
+      height: 48px;
+      margin-bottom: 12px;
+      border-radius: 8px;
+      font-weight: 500;
+      border: 1px solid $border-light;
+      transition: all 0.3s ease;
+
+      &:hover {
+        border-color: $primary-color;
+        color: $primary-color;
+        background: rgba(255, 77, 79, 0.05);
+      }
+    }
+
+    .mobile-signup-btn {
+      height: 48px;
+      border-radius: 8px;
+      background: $primary-color;
+      border-color: $primary-color;
+      font-weight: 600;
+      box-shadow: 0 4px 12px rgba(255, 77, 79, 0.3);
+
+      &:hover {
+        background: #ff7875;
+        border-color: #ff7875;
+      }
+    }
+  }
+}
+
+// Animations
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+// Responsive Design
+@media (max-width: $mobile) {
+  .navbar {
+    .navbar-container {
+      padding: 0 16px;
+      height: 60px;
+    }
+  }
+
+  .navbar-logo {
+    .logo-icon {
+      width: 36px;
+      height: 36px;
+
+      svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
+    .logo-text {
+      .brand-name {
+        font-size: 18px;
+      }
+
+      .brand-badge {
+        font-size: 10px;
+        padding: 3px 6px;
+      }
+    }
+  }
+
+  // Hide desktop nav and auth on mobile
+  .desktop-nav,
+  .desktop-auth {
+    display: none;
+  }
+
+  // Show mobile menu trigger
+  .mobile-menu-trigger {
+    display: block;
+  }
+}
+
+@media (min-width: $mobile) {
+  // Hide mobile menu trigger on desktop
+  .mobile-menu-trigger {
+    display: none;
+  }
+}
+
+// Hover states for better UX
+.navbar-container {
+  .nav-link,
+  .login-btn,
+  .signup-btn {
+    cursor: pointer;
+    user-select: none;
+  }
+}
+
+// Focus states for accessibility
+.nav-link:focus,
+.login-btn:focus,
+.signup-btn:focus,
+.menu-button:focus {
+  outline: 2px solid $primary-color;
+  outline-offset: 2px;
+}
+
+// Loading states
+.navbar-loading {
+  .navbar-logo,
+  .nav-link,
+  .login-btn,
+  .signup-btn {
+    opacity: 0.6;
+    pointer-events: none;
+  }
+}
+
+// Sticky navbar effects
+.navbar-sticky {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  transform: translateY(-100%);
+  animation: slideDown 0.3s ease forwards;
+}
+
+@keyframes slideDown {
+  to {
+    transform: translateY(0);
+  }
+}
+
+// Custom scrollbar for mobile drawer
+.mobile-drawer {
+  .ant-drawer-body {
+    scrollbar-width: thin;
+    scrollbar-color: $primary-color transparent;
+
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $primary-color;
+      border-radius: 2px;
+    }
+  }
+}

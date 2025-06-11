@@ -1,0 +1,137 @@
+.voucher-page {
+    padding: 24px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 24px;
+
+        h2.ant-typography {
+            margin: 0;
+            color: var(--text-color);
+        }
+    }
+
+    .ant-table-wrapper {
+        background-color: var(--card-background);
+        border-radius: 8px;
+        overflow-x: auto;
+    }
+
+    .ant-table {
+        background-color: var(--card-background);
+        color: var(--text-color);
+
+        .ant-table-thead>tr>th {
+            background-color: var(--table-header-background);
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr>td {
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr:hover>td {
+            background-color: var(--table-row-hover);
+        }
+    }
+
+    .ant-tag {
+        margin-right: 0;
+    }
+
+    .ant-modal {
+        .ant-modal-content {
+            background-color: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .ant-modal-header {
+            background-color: var(--card-background);
+            border-bottom-color: var(--border-color);
+
+            .ant-modal-title {
+                color: var(--text-color);
+            }
+        }
+
+        .ant-modal-body {
+            color: var(--text-color);
+        }
+
+        .ant-modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        .ant-form-item-label>label {
+            color: var(--text-color);
+        }
+
+        .ant-input,
+        .ant-input-number,
+        .ant-picker {
+            background-color: var(--input-background);
+            color: var(--text-color);
+            border-color: var(--border-color);
+
+            &:hover,
+            &:focus {
+                border-color: var(--primary-color);
+            }
+        }
+
+        .ant-select {
+            .ant-select-selector {
+                background-color: var(--input-background);
+                border-color: var(--border-color);
+            }
+
+            .ant-select-selection-item {
+                color: var(--text-color);
+            }
+        }
+    }
+}
+
+// Responsive styles
+@media screen and (max-width: 768px) {
+    .voucher-page {
+        padding: 16px;
+
+        .header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 16px;
+
+            h2.ant-typography {
+                font-size: 20px;
+            }
+        }
+
+        .ant-table-wrapper {
+            margin: 0 -16px;
+            padding: 0 16px;
+
+            .ant-table {
+                .ant-table-content {
+                    overflow-x: auto;
+                }
+            }
+        }
+
+        .ant-space {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            .ant-btn {
+                width: 100%;
+            }
+        }
+    }
+}

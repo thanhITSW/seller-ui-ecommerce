@@ -1,0 +1,97 @@
+@use 'sass:map';
+// Định nghĩa các breakpoint
+$breakpoints: (
+  'mobile-sm': 320px,   // Điện thoại nhỏ
+  'mobile': 480px,      // Điện thoại phổ thông
+  'tablet-sm': 640px,   // Tablet nhỏ
+  'tablet': 768px,      // Tablet phổ thông
+  'desktop-sm': 1024px, // Desktop nhỏ
+  'desktop': 1280px,    // Desktop phổ thông
+  'desktop-lg': 1440px, // Desktop lớn
+  'desktop-xl': 1920px  // Desktop cực lớn
+);
+
+$breakpoints: (
+  'mobile-sm': 320px,
+  'mobile': 480px,
+  'tablet-sm': 640px,
+  'tablet': 768px,
+  'desktop-sm': 1024px,
+  'desktop': 1280px,
+  'desktop-lg': 1440px,
+  'desktop-xl': 1920px
+);
+
+@mixin respond-to($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (max-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @error "Không có breakpoint: #{$breakpoint}.";
+  }
+}
+
+@mixin respond-from($breakpoint) {
+  @if map.has-key($breakpoints, $breakpoint) {
+    @media screen and (min-width: map.get($breakpoints, $breakpoint)) {
+      @content;
+    }
+  } @else {
+    @error "Không có breakpoint: #{$breakpoint}.";
+  }
+}
+
+@mixin respond-between($lower, $upper) {
+  @if map.has-key($breakpoints, $lower) and map.has-key($breakpoints, $upper) {
+    @media screen and (min-width: map.get($breakpoints, $lower)) and (max-width: map.get($breakpoints, $upper)) {
+      @content;
+    }
+  } @else {
+    @error "Không có breakpoint: #{$lower} hoặc #{$upper}.";
+  }
+}
+
+// Các class utility cho responsive
+.hide-on {
+    &-mobile {
+      @include respond-to('mobile') {
+        display: none !important;
+      }
+    }
+    
+    &-tablet {
+      @include respond-between('mobile', 'desktop-sm') {
+        display: none !important;
+      }
+    }
+    
+    &-desktop {
+      @include respond-from('tablet') {
+        display: none !important;
+      }
+    }
+  }
+
+// @for $i from 1 through 12 {
+//     .col-#{$i} {
+//       flex: 0 0 percentage($i / 12);
+//       max-width: percentage($i / 12);
+//       padding-right: 15px;
+//       padding-left: 15px;
+//     }
+    
+//     .col-tablet-#{$i} {
+//       @include respond-from('tablet') {
+//         flex: 0 0 percentage($i / 12);
+//         max-width: percentage($i / 12);
+//       }
+//     }
+    
+//     .col-desktop-#{$i} {
+//       @include respond-from('desktop-sm') {
+//         flex: 0 0 percentage($i / 12);
+//         max-width: percentage($i / 12);
+//       }
+//     }
+//   }

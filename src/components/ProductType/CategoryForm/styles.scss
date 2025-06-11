@@ -1,0 +1,39 @@
+.category-form {
+    .ant-modal-content {
+        background-color: var(--card-background);
+        color: var(--text-color);
+    }
+
+    .ant-modal-header {
+        background-color: var(--card-background);
+        border-bottom-color: var(--border-color);
+
+        .ant-modal-title {
+            color: var(--text-color);
+        }
+    }
+
+    .ant-modal-body {
+        color: var(--text-color);
+    }
+
+    .ant-modal-footer {
+        border-top-color: var(--border-color);
+    }
+
+    .ant-form-item-label>label {
+        color: var(--text-color);
+    }
+
+    .ant-input,
+    .ant-input-textarea {
+        background-color: var(--input-background);
+        color: var(--text-color);
+        border-color: var(--border-color);
+
+        &:hover,
+        &:focus {
+            border-color: var(--primary-color);
+        }
+    }
+}

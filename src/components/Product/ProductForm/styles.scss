@@ -1,0 +1,67 @@
+.product-form {
+    .ant-modal-content {
+        background: var(--background-color);
+        border-radius: 8px;
+    }
+
+    .ant-modal-header {
+        background: var(--background-color);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    .ant-modal-title {
+        color: var(--text-color);
+    }
+
+    .ant-modal-body {
+        color: var(--text-color);
+    }
+
+    .ant-form-item-label>label {
+        color: var(--text-color);
+    }
+
+    .ant-input,
+    .ant-input-textarea,
+    .ant-select-selector {
+        background: var(--input-background);
+        border-color: var(--border-color);
+        color: var(--text-color);
+
+        &:hover,
+        &:focus {
+            border-color: var(--primary-color);
+        }
+    }
+
+    .ant-select-dropdown {
+        background: var(--background-color);
+        border: 1px solid var(--border-color);
+    }
+
+    .ant-select-item {
+        color: var(--text-color);
+
+        &:hover {
+            background: var(--hover-color);
+        }
+
+        &-option-selected {
+            background: var(--primary-color);
+            color: var(--text-color);
+        }
+    }
+
+    .ant-btn {
+        &.ant-btn-primary {
+            background: var(--primary-color);
+            border-color: var(--primary-color);
+            color: var(--text-color);
+
+            &:hover {
+                background: var(--primary-hover-color);
+                border-color: var(--primary-hover-color);
+            }
+        }
+    }
+}

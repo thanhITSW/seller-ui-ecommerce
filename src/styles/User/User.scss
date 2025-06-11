@@ -1,0 +1,115 @@
+.user-page {
+    padding: 24px;
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--background-color);
+    color: var(--text-color);
+
+    h2.ant-typography {
+        margin-bottom: 24px;
+        color: var(--text-color);
+    }
+
+    .ant-table-wrapper {
+        background-color: var(--card-background);
+        border-radius: 8px;
+        overflow-x: auto; // Add horizontal scroll for small screens
+    }
+
+    .ant-table {
+        background-color: var(--card-background);
+        color: var(--text-color);
+
+        .ant-table-thead>tr>th {
+            background-color: var(--table-header-background);
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr>td {
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr:hover>td {
+            background-color: var(--table-row-hover);
+        }
+    }
+
+    .ant-space {
+        .ant-btn {
+            margin-right: 8px;
+        }
+    }
+
+    .ant-modal {
+        .ant-modal-content {
+            background-color: var(--card-background);
+            color: var(--text-color);
+        }
+
+        .ant-modal-header {
+            background-color: var(--card-background);
+            border-bottom-color: var(--border-color);
+
+            .ant-modal-title {
+                color: var(--text-color);
+            }
+        }
+
+        .ant-modal-body {
+            color: var(--text-color);
+        }
+
+        .ant-modal-footer {
+            border-top-color: var(--border-color);
+        }
+
+        .ant-form-item-label>label {
+            color: var(--text-color);
+        }
+
+        .ant-input {
+            background-color: var(--input-background);
+            color: var(--text-color);
+            border-color: var(--border-color);
+
+            &:hover,
+            &:focus {
+                border-color: var(--primary-color);
+            }
+        }
+    }
+}
+
+// Responsive styles
+@media screen and (max-width: 768px) {
+    .user-page {
+        padding: 16px;
+
+        h2.ant-typography {
+            font-size: 20px;
+            margin-bottom: 16px;
+        }
+
+        .ant-table-wrapper {
+            margin: 0 -16px; // Negative margin to allow table to scroll on small screens
+            padding: 0 16px;
+
+            .ant-table {
+                .ant-table-content {
+                    overflow-x: auto;
+                }
+            }
+        }
+
+        .ant-space {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+
+            .ant-btn {
+                margin-right: 0;
+                width: 100%;
+            }
+        }
+    }
+}

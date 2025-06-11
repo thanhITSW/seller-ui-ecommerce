@@ -1,0 +1,30 @@
+.category-list {
+    .ant-table-wrapper {
+        background-color: var(--card-background);
+        border-radius: 8px;
+    }
+
+    .ant-table {
+        background-color: var(--card-background);
+        color: var(--text-color);
+
+        .ant-table-thead>tr>th {
+            background-color: var(--table-header-background);
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr>td {
+            color: var(--text-color);
+        }
+
+        .ant-table-tbody>tr:hover>td {
+            background-color: var(--table-row-hover);
+        }
+    }
+
+    .ant-space {
+        .ant-btn {
+            margin-right: 8px;
+        }
+    }
+}

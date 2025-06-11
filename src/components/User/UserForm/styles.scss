@@ -1,0 +1,15 @@
+.user-form {
+    .ant-form-item {
+        margin-bottom: 24px;
+    }
+
+    .ant-upload-list {
+        margin-top: 8px;
+    }
+
+    @media (max-width: 576px) {
+        .ant-form-item {
+            margin-bottom: 16px;
+        }
+    }
+}
