@@ -41,7 +41,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
         form.validateFields().then((values) => {
             const formattedValues = {
                 ...values,
-                issuer_type: 'platform',
+                issuer_type: 'shop',
                 start_date: values.start_date.format('YYYY-MM-DD'),
                 end_date: values.end_date.format('YYYY-MM-DD'),
                 discount_value: values.discount_value?.toString(),

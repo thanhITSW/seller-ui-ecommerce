@@ -189,25 +189,28 @@ const MainPageLayout: React.FC = () => {
             <Menu mode="inline" defaultSelectedKeys={["errorPage"]}>
               <Menu.SubMenu key="product" icon={<ShoppingOutlined />} title="Product">
                 <Menu.Item key="productManagement"><Link to="/products">Product Management</Link></Menu.Item>
-                <Menu.Item key="productApproval"><Link to="/products/approval">Approval</Link></Menu.Item>
+                {/* <Menu.Item key="productApproval"><Link to="/products/approval">Approval</Link></Menu.Item> */}
                 <Menu.Item key="productBrand"><Link to="/products/brand">Brand</Link></Menu.Item>
-                <Menu.Item key="productType"><Link to="/products/type">Product Type</Link></Menu.Item>
+                {/* <Menu.Item key="productType"><Link to="/products/type">Product Type</Link></Menu.Item> */}
               </Menu.SubMenu>
-              <Menu.Item key="customerManagement" icon={<UserOutlined />}>
+              {/* <Menu.Item key="customerManagement" icon={<UserOutlined />}>
                 <Link to="/customers">Customer Management</Link>
-              </Menu.Item>
+              </Menu.Item> */}
               <Menu.Item key="voucherManagement" icon={<GiftOutlined />}>
                 <Link to="/vouchers">Voucher Management</Link>
               </Menu.Item>
               <Menu.Item key="storeManagement" icon={<ShoppingOutlined />}>
-                <Link to="/stores">Store Management</Link>
+                <Link to="/stores">Store Settings</Link>
               </Menu.Item>
               <Menu.Item key="paymentManagement" icon={<MoneyCollectOutlined />}>
                 <Link to="/payments">Payment Management</Link>
               </Menu.Item>
-              <Menu.Item key="orderManagement" icon={<ContainerOutlined />}>
-                <Link to="/orders">Order Management</Link>
-              </Menu.Item>
+              <Menu.SubMenu key="order" icon={<ContainerOutlined />} title="Order">
+                <Menu.Item key="orderManagement"><Link to="/orders">Order Management</Link></Menu.Item>
+                {/* <Menu.Item key="productApproval"><Link to="/products/approval">Approval</Link></Menu.Item> */}
+                <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Request Order Return</Link></Menu.Item>
+                {/* <Menu.Item key="productType"><Link to="/products/type">Product Type</Link></Menu.Item> */}
+              </Menu.SubMenu>
               <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
                 Under Maintenance
               </Menu.Item>

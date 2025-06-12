@@ -6,7 +6,7 @@ import { Category, Attribute } from '../types/ProductType';
 
 const productApi = {
     getProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: ProductApi[] }>> => {
-        const url = '/product/products/list-product?approval_status=approved';
+        const url = '/product/products/list-product?approval_status=approved&seller_id=1';
         return handleRequest(axiosClient.get(url));
     },
     getPendingProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: ProductApi[] }>> => {

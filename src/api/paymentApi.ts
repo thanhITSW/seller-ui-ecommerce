@@ -20,7 +20,7 @@ const paymentApi = {
         return handleRequest(axiosClient.delete(url));
     },
     getPaymentHistory: (params?: { from_date?: string; to_date?: string; status?: PaymentStatus; page?: number; limit?: number }): Promise<HttpResponse<{ code: number; success: boolean; data: PaymentHistoryListResponse }>> => {
-        const url = '/payment/payments/history';
+        const url = '/payment/payments/history?seller_id=1';
         return handleRequest(axiosClient.get(url, { params }));
     },
     getPaymentDetails: (id: string): Promise<HttpResponse<{ code: number; success: boolean; data: PaymentHistory }>> => {

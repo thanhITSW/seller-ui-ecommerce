@@ -175,7 +175,7 @@ const OrderPage: React.FC = () => {
                 <Space>
                     <Button icon={<EyeOutlined />} onClick={() => handleViewDetails(record)} />
                     <Button icon={<EditOutlined />} onClick={() => handleEdit(record)} />
-                    <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record)} />
+                    {/* <Button icon={<DeleteOutlined />} danger onClick={() => handleDelete(record)} /> */}
                 </Space>
             ),
         },

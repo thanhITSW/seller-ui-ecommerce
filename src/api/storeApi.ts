@@ -23,6 +23,22 @@ const storeApi = {
         const url = `/store/stores/${id}`;
         return handleRequest(axiosClient.delete(url));
     },
+    uploadAvatar: (id: string, file: File): Promise<HttpResponse<any>> => {
+        const url = `/store/stores/${id}/avatar`;
+        const formData = new FormData();
+        formData.append('avatar', file);
+        return handleRequest(axiosClient.patch(url, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }));
+    },
+    uploadBanner: (id: string, file: File): Promise<HttpResponse<any>> => {
+        const url = `/store/stores/${id}/banner`;
+        const formData = new FormData();
+        formData.append('banner', file);
+        return handleRequest(axiosClient.patch(url, formData, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }));
+    },
 };
 
 export default storeApi; 

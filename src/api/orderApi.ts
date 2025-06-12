@@ -4,7 +4,7 @@ import { HttpResponse } from '../types/http';
 
 const orderApi = {
     getList: (params?: any): Promise<HttpResponse<OrderListResponse>> => {
-        const url = '/order/orders/';
+        const url = '/order/orders?seller_id=1';
         return handleRequest(axiosClient.get(url, { params }));
     },
     getOrderById: (id: string): Promise<HttpResponse<{ code: number; message: string; data: Order }>> => {

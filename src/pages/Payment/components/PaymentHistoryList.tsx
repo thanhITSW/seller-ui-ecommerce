@@ -124,7 +124,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ loading }) => {
             render: (_, record) => (
                 <Space>
                     <Button size="small" type="primary" className={styles.actionBtn} onClick={() => handleShowDetail(record)}>Chi tiết</Button>
-                    <Select
+                    {/* <Select
                         size="small"
                         value={record.status}
                         style={{ width: 120 }}
@@ -132,7 +132,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ loading }) => {
                         className={styles.statusSelect}
                     >
                         {statusOptions.map(s => <Option key={s} value={s}>{s}</Option>)}
-                    </Select>
+                    </Select> */}
                 </Space>
             ),
         },

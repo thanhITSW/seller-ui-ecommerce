@@ -63,7 +63,7 @@ const PaymentPage: React.FC = () => {
                         onShowFilter={() => setHistoryFilterVisible(true)}
                     />
                 </Tabs.TabPane>
-                <Tabs.TabPane tab="Quản lí phương thức thanh toán" key="2">
+                {/* <Tabs.TabPane tab="Quản lí phương thức thanh toán" key="2">
                     <div className={styles['tab-header']}>
                         <Button
                             type="primary"
@@ -79,7 +79,7 @@ const PaymentPage: React.FC = () => {
                         onEdit={handleEdit}
                         ref={methodListRef}
                     />
-                </Tabs.TabPane>
+                </Tabs.TabPane> */}
             </Tabs>
             <PaymentMethodForm
                 visible={methodFormVisible}
