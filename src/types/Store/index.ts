@@ -16,6 +16,7 @@ export interface Store {
     ward_name: string;
     address_detail: string;
     license_url: string;
+    balance: number;
     status: StoreStatus;
     createdAt: string;
     updatedAt: string;

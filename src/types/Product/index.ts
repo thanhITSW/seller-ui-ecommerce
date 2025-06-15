@@ -73,4 +73,16 @@ export interface ProductApi {
     product_details: Record<string, any>;
     createdAt: string;
     updatedAt: string;
-} 
+}
+
+export interface ProductReview {
+    id: string;
+    user_id: string;
+    order_id: string;
+    user_fullname: string;
+    product_id: string;
+    comment: string;
+    rating: number;
+    createdAt: string;
+    updatedAt: string;
+}

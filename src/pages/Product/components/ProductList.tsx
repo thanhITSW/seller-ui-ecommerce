@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Tag, Modal, Image, Space, Descriptions, Spin, message, Popconfirm } from 'antd';
+import { Table, Button, Tag, Modal, Image, Space, Descriptions, Spin, message, Popconfirm, Dropdown, Menu } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { ProductApi } from '../../../types/Product';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined, StarFilled } from '@ant-design/icons';
+import { ProductApi, ProductReview } from '../../../types/Product';
 import productApi from '../../../api/productApi';
 import ProductForm from '../../../components/Product/ProductForm';
+import { Rate } from 'antd';
 
 const ProductList: React.FC = () => {
     const [products, setProducts] = useState<ProductApi[]>([]);
@@ -15,6 +16,10 @@ const ProductList: React.FC = () => {
     const [formLoading, setFormLoading] = useState(false);
     const [editProduct, setEditProduct] = useState<ProductApi | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
+    const [reviewModalVisible, setReviewModalVisible] = useState(false);
+    const [reviews, setReviews] = useState<ProductReview[]>([]);
+    const [reviewLoading, setReviewLoading] = useState(false);
+    const [reviewProductId, setReviewProductId] = useState<string | null>(null);
 
     const fetchProducts = async () => {
         setLoading(true);
@@ -88,6 +93,44 @@ const ProductList: React.FC = () => {
         }
     };
 
+    const handleViewReviews = async (productId: string) => {
+        setReviewProductId(productId);
+        setReviewModalVisible(true);
+        setReviewLoading(true);
+        try {
+            const response = await productApi.getProductReviews(productId);
+            if (response.ok && response.body?.code === 0) {
+                setReviews(response.body.data);
+            } else {
+                setReviews([]);
+                message.error(response.body?.message || 'Không thể tải đánh giá');
+            }
+        } catch (error) {
+            setReviews([]);
+            message.error('Không thể tải đánh giá');
+        } finally {
+            setReviewLoading(false);
+        }
+    };
+
+    const handleDeleteReview = async (reviewId: string) => {
+        setReviewLoading(true);
+        try {
+            const response = await productApi.deleteReviewByManager(reviewId);
+            if (response.ok && response.body?.code === 0) {
+                message.success('Xóa đánh giá thành công');
+                // Refresh reviews
+                if (reviewProductId) handleViewReviews(reviewProductId);
+            } else {
+                message.error(response.body?.message || 'Xóa đánh giá thất bại');
+            }
+        } catch (error) {
+            message.error('Xóa đánh giá thất bại');
+        } finally {
+            setReviewLoading(false);
+        }
+    };
+
     const columns: ColumnsType<ProductApi> = [
         {
             title: 'Image',
@@ -130,26 +173,29 @@ const ProductList: React.FC = () => {
         {
             title: 'Actions',
             key: 'actions',
-            render: (_: any, record: ProductApi) => (
-                <Space>
-                    <Button icon={<EyeOutlined />} onClick={() => { setSelectedProduct(record); setDetailModalVisible(true); }}>
-                        Xem chi tiết
-                    </Button>
-                    <Button icon={<EditOutlined />} onClick={() => handleEdit(record)}>
-                        Sửa
-                    </Button>
-                    <Popconfirm
-                        title="Bạn có chắc muốn xóa sản phẩm này?"
-                        onConfirm={() => handleDelete(record.id)}
-                        okText="Xóa"
-                        cancelText="Hủy"
-                    >
-                        <Button icon={<DeleteOutlined />} danger>
+            render: (_: any, record: ProductApi) => {
+                const menu = (
+                    <Menu>
+                        <Menu.Item key="detail" icon={<EyeOutlined />} onClick={() => { setSelectedProduct(record); setDetailModalVisible(true); }}>
+                            Xem chi tiết
+                        </Menu.Item>
+                        <Menu.Item key="edit" icon={<EditOutlined />} onClick={() => handleEdit(record)}>
+                            Sửa
+                        </Menu.Item>
+                        <Menu.Item key="review" icon={<StarFilled style={{ color: '#faad14' }} />} onClick={() => handleViewReviews(record.id)}>
+                            Xem đánh giá
+                        </Menu.Item>
+                        <Menu.Item key="delete" icon={<DeleteOutlined />} danger onClick={() => handleDelete(record.id)}>
                             Xóa
-                        </Button>
-                    </Popconfirm>
-                </Space>
-            ),
+                        </Menu.Item>
+                    </Menu>
+                );
+                return (
+                    <Dropdown overlay={menu} trigger={["click"]}>
+                        <Button icon={<MoreOutlined />} />
+                    </Dropdown>
+                );
+            },
         },
     ];
 
@@ -261,6 +307,35 @@ const ProductList: React.FC = () => {
                 initialValues={editProduct || undefined}
                 loading={formLoading}
             />
+            <Modal
+                title="Đánh giá sản phẩm"
+                open={reviewModalVisible}
+                onCancel={() => setReviewModalVisible(false)}
+                footer={null}
+                width={700}
+            >
+                <Spin spinning={reviewLoading}>
+                    {reviews.length === 0 && !reviewLoading ? (
+                        <div style={{ textAlign: 'center', color: '#888', padding: 32 }}>Không có đánh giá nào cho sản phẩm này.</div>
+                    ) : (
+                        <div>
+                            {reviews.map((review) => (
+                                <div key={review.id} style={{ borderBottom: '1px solid #f0f0f0', padding: 16, marginBottom: 8, background: '#fafafa', borderRadius: 8 }}>
+                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: 4 }}>
+                                        <b style={{ marginRight: 8 }}>{review.user_fullname}</b>
+                                        <Rate disabled value={review.rating} allowHalf style={{ color: '#faad14', fontSize: 18, marginRight: 8 }} />
+                                        <span style={{ fontSize: 12, color: '#888', marginLeft: 'auto' }}>{new Date(review.createdAt).toLocaleString()}</span>
+                                    </div>
+                                    <div style={{ margin: '8px 0', fontSize: 15 }}>{review.comment}</div>
+                                    <Button danger size="small" onClick={() => handleDeleteReview(review.id)}>
+                                        Xóa đánh giá
+                                    </Button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </Spin>
+            </Modal>
         </div>
     );
 };

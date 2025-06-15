@@ -3,6 +3,7 @@ import { HttpResponse } from '../types/http';
 import { ProductApi } from '../types/Product';
 import { ProductType } from '../types/ProductType';
 import { Category, Attribute } from '../types/ProductType';
+import { ProductReview } from '../types/Product';
 
 const productApi = {
     getProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: ProductApi[] }>> => {
@@ -48,6 +49,14 @@ const productApi = {
     getAttributesByType: (productTypeId: string): Promise<HttpResponse<{ code: number; message: string; data: Attribute[] }>> => {
         const url = `/product/product-types/list-detail-attribute/${productTypeId}`;
         return handleRequest(axiosClient.get(url));
+    },
+    getProductReviews: (productId: string): Promise<HttpResponse<{ code: number; message: string; data: ProductReview[] }>> => {
+        const url = `/product/reviews/${productId}`;
+        return handleRequest(axiosClient.get(url));
+    },
+    deleteReviewByManager: (reviewId: string): Promise<HttpResponse<any>> => {
+        const url = `/product/reviews/delete-by-manager/${reviewId}`;
+        return handleRequest(axiosClient.delete(url));
     },
 };
 

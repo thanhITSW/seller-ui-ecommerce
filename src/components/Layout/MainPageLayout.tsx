@@ -205,11 +205,13 @@ const MainPageLayout: React.FC = () => {
               <Menu.Item key="paymentManagement" icon={<MoneyCollectOutlined />}>
                 <Link to="/payments">Payment Management</Link>
               </Menu.Item>
+              <Menu.SubMenu key="payment" icon={<ContainerOutlined />} title="Payment">
+                <Menu.Item key="paymentManagement"><Link to="/payments">Payment Management</Link></Menu.Item>
+                <Menu.Item key="withdraw"><Link to="/withdraw-requests">Withdraw Request</Link></Menu.Item>
+              </Menu.SubMenu>
               <Menu.SubMenu key="order" icon={<ContainerOutlined />} title="Order">
                 <Menu.Item key="orderManagement"><Link to="/orders">Order Management</Link></Menu.Item>
-                {/* <Menu.Item key="productApproval"><Link to="/products/approval">Approval</Link></Menu.Item> */}
                 <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Request Order Return</Link></Menu.Item>
-                {/* <Menu.Item key="productType"><Link to="/products/type">Product Type</Link></Menu.Item> */}
               </Menu.SubMenu>
               <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
                 Under Maintenance

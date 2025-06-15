@@ -13,6 +13,7 @@ import StorePage from './pages/Store/Store';
 import PaymentPage from './pages/Payment/Payment';
 import ShipmentPage from './pages/Shipment/Shipment';
 import { OrderPage, ReturnRequestPage } from './pages/Order';
+import WithdrawRequestPage from './pages/WithdrawRequest';
 import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 
@@ -52,6 +53,7 @@ function App() {
           <Route path="shipments" element={<ShipmentPage />} />
           <Route path="orders" element={<OrderPage />} />
           <Route path="orders/return-requests" element={<ReturnRequestPage />} />
+          <Route path="withdraw-requests" element={<WithdrawRequestPage />} />
         </Route>
         <Route path="*" element={<Error404 />} />
       </Routes>
