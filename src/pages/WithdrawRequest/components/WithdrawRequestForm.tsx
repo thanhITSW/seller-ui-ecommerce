@@ -21,13 +21,14 @@ interface WithdrawRequestFormProps {
 const WithdrawRequestForm: React.FC<WithdrawRequestFormProps> = ({ visible, onCancel, onSuccess, paymentMethods }) => {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const STORE_ID = localStorage.getItem('store_id') || '';
 
     const handleSubmit = async () => {
         try {
             const values = await form.validateFields();
             setLoading(true);
             const payload: WithdrawRequestCreatePayload = {
-                store_id: '1',
+                store_id: STORE_ID,
                 amount: values.amount,
                 store_payment_info_id: values.store_payment_info_id,
             };

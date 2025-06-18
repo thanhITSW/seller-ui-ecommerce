@@ -5,8 +5,7 @@ import StoreForm from '../../components/Store/StoreForm/StoreForm';
 import { Store } from '../../types/Store';
 import storeApi from '../../api/storeApi';
 import '@/styles/Store/Store/Store.scss';
-
-const STORE_ID = '1';
+import { useSelector } from 'react-redux';
 
 const StoreProfilePage: React.FC = () => {
     const [store, setStore] = useState<Store | null>(null);
@@ -14,6 +13,7 @@ const StoreProfilePage: React.FC = () => {
     const [editVisible, setEditVisible] = useState(false);
     const [avatarUploading, setAvatarUploading] = useState(false);
     const [bannerUploading, setBannerUploading] = useState(false);
+    const STORE_ID = localStorage.getItem('store_id') || '';
 
     const fetchStore = async () => {
         setLoading(true);

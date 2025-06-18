@@ -23,6 +23,7 @@ const StorePaymentInfoForm: React.FC<StorePaymentInfoFormProps> = ({ visible, on
     const [loading, setLoading] = React.useState(false);
     const [qrFile, setQrFile] = React.useState<any[]>([]);
     const methodType = Form.useWatch('method_type', form);
+    const STORE_ID = localStorage.getItem('store_id') || '';
 
     useEffect(() => {
         if (visible) {
@@ -37,7 +38,7 @@ const StorePaymentInfoForm: React.FC<StorePaymentInfoFormProps> = ({ visible, on
             setLoading(true);
             const payload: any = {
                 ...values,
-                store_id: '1',
+                store_id: STORE_ID,
                 is_default: !!values.is_default,
             };
             if (qrFile.length && qrFile[0].originFileObj) {

@@ -58,11 +58,11 @@ axiosClient.interceptors.response.use(
         notFound: status === 404,
         clientError: status >= 400 && status <= 499,
         serverError: status >= 500 && status <= 599,
-        message: data.messageCode || data.data.messageCode,
-        title: `${data.messageCode}-title`,
-        errors: data.errors,
-        detail: data.detail,
-        data: data.data,
+        message: data?.messageCode || data?.data?.messageCode || data?.message || data?.data?.message,
+        title: `${data?.messageCode}-title`,
+        errors: data?.errors,
+        detail: data?.detail,
+        data: data?.data,
       },
     };
 

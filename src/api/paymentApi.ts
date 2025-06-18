@@ -2,6 +2,12 @@ import axiosClient, { handleRequest } from './axiosClient';
 import { PaymentMethod, PaymentHistory, PaymentHistoryListResponse, PaymentStatus } from '../types/Payment';
 import { HttpResponse } from '../types/http';
 
+function getStoreId() {
+    const storeId = localStorage.getItem('store_id');
+    if (!storeId) throw new Error('No store_id in localStorage');
+    return storeId;
+}
+
 const paymentApi = {
     getPaymentMethods: (): Promise<HttpResponse<{ code: number; success: boolean; data: PaymentMethod[] }>> => {
         const url = '/payment/payments/methods';
@@ -20,7 +26,7 @@ const paymentApi = {
         return handleRequest(axiosClient.delete(url));
     },
     getPaymentHistory: (params?: { from_date?: string; to_date?: string; status?: PaymentStatus; page?: number; limit?: number }): Promise<HttpResponse<{ code: number; success: boolean; data: PaymentHistoryListResponse }>> => {
-        const url = '/payment/payments/history?seller_id=1';
+        const url = `/payment/payments/history?seller_id=${getStoreId()}`;
         return handleRequest(axiosClient.get(url, { params }));
     },
     getPaymentDetails: (id: string): Promise<HttpResponse<{ code: number; success: boolean; data: PaymentHistory }>> => {

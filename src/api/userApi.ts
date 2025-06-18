@@ -32,6 +32,11 @@ const userApi = {
     const url = `/user/users/${id}`;
     return handleRequest(axiosClient.delete(url));
   },
+
+  registerSeller: (data: { email: string; password: string; fullname: string; phone: string; role: string }) => {
+    const url = '/user/users/registerSeller';
+    return handleRequest(axiosClient.post(url, data));
+  },
 };
 
 export default userApi;

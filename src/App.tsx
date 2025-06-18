@@ -18,24 +18,24 @@ import { useSelector } from 'react-redux';
 import { RootState } from './redux/store';
 
 function App() {
-  const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
-  if (isLoggedIn) {
-    return (
-      <Router>
-        <Routes>
-          <Route path="/my/error" element={<Error404 />} />
-          <Route path="/my/products" element={<ProductManagement />} />
-          <Route path="/my/products/approval" element={<ProductApproval />} />
-          <Route path="/my/products/brand" element={<BrandPage />} />
-          <Route path="/my/products/type" element={<ProductTypePage />} />
-          <Route path="/my/customers" element={<UserPage />} />
-          <Route path="/my/vouchers" element={<VoucherPage />} />
-          <Route path="/my/orders" element={<OrderPage />} />
-          <Route path="*" element={<Error404 />} />
-        </Routes>
-      </Router>
-    )
-  }
+  // const isLoggedIn = useSelector((state: RootState) => state.auth.isLoggedIn);
+  // if (isLoggedIn) {
+  //   return (
+  //     <Router>
+  //       <Routes>
+  //         <Route path="/my/error" element={<Error404 />} />
+  //         <Route path="/my/products" element={<ProductManagement />} />
+  //         <Route path="/my/products/approval" element={<ProductApproval />} />
+  //         <Route path="/my/products/brand" element={<BrandPage />} />
+  //         <Route path="/my/products/type" element={<ProductTypePage />} />
+  //         <Route path="/my/customers" element={<UserPage />} />
+  //         <Route path="/my/vouchers" element={<VoucherPage />} />
+  //         <Route path="/my/orders" element={<OrderPage />} />
+  //         <Route path="*" element={<Error404 />} />
+  //       </Routes>
+  //     </Router>
+  //   )
+  // }
   return (
     <Router>
       <Routes>

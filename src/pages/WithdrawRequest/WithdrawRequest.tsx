@@ -20,10 +20,12 @@ const WithdrawRequestPage: React.FC = () => {
     const [infoFormEdit, setInfoFormEdit] = useState<StorePaymentInfo | null>(null);
     const [infoListKey, setInfoListKey] = useState(0);
 
+    const STORE_ID = localStorage.getItem('store_id') || '';
+
     useEffect(() => {
         const fetchBalance = async () => {
             try {
-                const res = await storeApi.getById('1');
+                const res = await storeApi.getById(STORE_ID);
                 if (res.ok && res.body?.code === 0) {
                     setBalance(res.body.data.balance);
                 } else {
@@ -38,7 +40,7 @@ const WithdrawRequestPage: React.FC = () => {
 
     const handleCreate = async () => {
         try {
-            const res = await withdrawRequestApi.getStorePaymentInfos('1');
+            const res = await withdrawRequestApi.getStorePaymentInfos();
             if (res.ok && res.body?.code === 0) {
                 setPaymentMethods(res.body.data);
                 setFormVisible(true);

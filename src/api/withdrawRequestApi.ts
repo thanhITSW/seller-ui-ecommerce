@@ -2,6 +2,12 @@ import axiosClient, { handleRequest } from './axiosClient';
 import { WithdrawRequest, WithdrawRequestListResponse, WithdrawRequestCreatePayload, StorePaymentInfo } from '../types/WithdrawRequest';
 import { HttpResponse } from '../types/http';
 
+function getStoreId() {
+    const storeId = localStorage.getItem('store_id');
+    if (!storeId) throw new Error('No store_id in localStorage');
+    return storeId;
+}
+
 const withdrawRequestApi = {
     getWithdrawRequests: (params?: { page?: number; limit?: number; status?: string }): Promise<HttpResponse<{ code: number; message: string; data: WithdrawRequestListResponse }>> => {
         const url = '/store/withdraw_requests';
@@ -11,8 +17,8 @@ const withdrawRequestApi = {
         const url = '/store/withdraw_requests';
         return handleRequest(axiosClient.post(url, data));
     },
-    getStorePaymentInfos: (storeId: string): Promise<HttpResponse<{ code: number; message: string; data: StorePaymentInfo[] }>> => {
-        const url = `/store/store_payment_infos/store/${storeId}`;
+    getStorePaymentInfos: (): Promise<HttpResponse<{ code: number; message: string; data: StorePaymentInfo[] }>> => {
+        const url = `/store/store_payment_infos/store/${getStoreId()}`;
         return handleRequest(axiosClient.get(url));
     },
     createStorePaymentInfo: (data: Partial<StorePaymentInfo> & { qr_code_file?: File }): Promise<HttpResponse<any>> => {

@@ -87,6 +87,7 @@ const MainPageLayout: React.FC = () => {
   const { theme, toggleTheme } = useTheme();
 
   const navigate = useNavigate
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
 
   const [currentLang, setCurrentLang] = useState<Language>();
 
@@ -99,8 +100,6 @@ const MainPageLayout: React.FC = () => {
 
   useEffect(() => {
     setCurrentLang(language);
-
-
   }, [language]);
 
 
@@ -111,7 +110,7 @@ const MainPageLayout: React.FC = () => {
         <div className="header-left">
           <div className="logo">
             <span className="logo-icon">Ecommerce</span>
-            <span className="logo-text">Admin</span>
+            <span className="logo-text">Seller</span>
           </div>
         </div>
         <div className="header-right">
@@ -159,10 +158,10 @@ const MainPageLayout: React.FC = () => {
             className="user-dropdown"
           >
             <div className="user-profile">
-              <Avatar className="user-avatar">Admin</Avatar>
+              <Avatar className="user-avatar">Seller</Avatar>
               <div className="user-info">
-                <div className="user-name">Admin</div>
-                <div className="user-role">Manager system</div>
+                <div className="user-name">{user.fullname}</div>
+                <div className="user-role">{user.role}</div>
               </div>
             </div>
           </Dropdown>
@@ -201,9 +200,6 @@ const MainPageLayout: React.FC = () => {
               </Menu.Item>
               <Menu.Item key="storeManagement" icon={<ShoppingOutlined />}>
                 <Link to="/stores">Store Settings</Link>
-              </Menu.Item>
-              <Menu.Item key="paymentManagement" icon={<MoneyCollectOutlined />}>
-                <Link to="/payments">Payment Management</Link>
               </Menu.Item>
               <Menu.SubMenu key="payment" icon={<ContainerOutlined />} title="Payment">
                 <Menu.Item key="paymentManagement"><Link to="/payments">Payment Management</Link></Menu.Item>

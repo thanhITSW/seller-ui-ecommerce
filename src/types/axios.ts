@@ -11,6 +11,7 @@ interface ErrorData {
 interface AxiosResponseData {
   fieldErrors: FieldErrorData[];
   messageCode: string;
+  message: string;
   errors: object;
   data: ErrorData;
   detail: string;

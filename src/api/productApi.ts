@@ -5,13 +5,19 @@ import { ProductType } from '../types/ProductType';
 import { Category, Attribute } from '../types/ProductType';
 import { ProductReview } from '../types/Product';
 
+function getStoreId() {
+    const storeId = localStorage.getItem('store_id');
+    if (!storeId) throw new Error('No store_id in localStorage');
+    return storeId;
+}
+
 const productApi = {
     getProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: ProductApi[] }>> => {
-        const url = '/product/products/list-product?approval_status=approved&seller_id=1';
+        const url = `/product/products/list-product?approval_status=approved&seller_id=${getStoreId()}`;
         return handleRequest(axiosClient.get(url));
     },
     getPendingProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: ProductApi[] }>> => {
-        const url = '/product/products/list-product?approval_status=pending';
+        const url = `/product/products/list-product?approval_status=pending&seller_id=${getStoreId()}`;
         return handleRequest(axiosClient.get(url));
     },
     getBrands: (): Promise<HttpResponse<{ code: number; message: string; data: string[] }>> => {

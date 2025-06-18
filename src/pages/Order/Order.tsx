@@ -14,9 +14,9 @@ const { RangePicker } = DatePicker;
 const orderStatusOptions = [
     { value: '', label: 'Tất cả' },
     { value: 'pending', label: 'Chờ xử lý' },
-    { value: 'confirmed', label: 'Đã xác nhận' },
-    { value: 'delivered', label: 'Đã giao' },
-    { value: 'cancelled', label: 'Đã hủy' },
+    { value: 'confirmed', label: 'Đã xác nhận' }
+    // { value: 'delivered', label: 'Đã giao' },
+    // { value: 'cancelled', label: 'Đã hủy' },
 ];
 
 const paymentStatusOptions = [
@@ -273,13 +273,13 @@ const OrderPage: React.FC = () => {
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item label="Trạng thái thanh toán" name="payment_status">
+                    {/* <Form.Item label="Trạng thái thanh toán" name="payment_status">
                         <Select>
                             {paymentStatusOptions.filter(opt => opt.value).map(opt => (
                                 <Option key={opt.value} value={opt.value}>{opt.label}</Option>
                             ))}
                         </Select>
-                    </Form.Item>
+                    </Form.Item> */}
                 </Form>
             </Modal>
         </div>

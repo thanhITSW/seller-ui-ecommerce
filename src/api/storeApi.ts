@@ -39,6 +39,16 @@ const storeApi = {
             headers: { 'Content-Type': 'multipart/form-data' }
         }));
     },
+    getStoreByUserId: (userId: string): Promise<HttpResponse<{ code: number; message: string; data: any }>> => {
+        const url = `/store/user_seller_access/user/${userId}`;
+        return handleRequest(axiosClient.get(url));
+    },
+    createStore: (data: any): Promise<HttpResponse<any>> => {
+        const url = '/store/stores';
+        return handleRequest(axiosClient.post(url, data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }));
+    },
 };
 
 export default storeApi; 

@@ -18,7 +18,7 @@ export interface WithdrawRequestListResponse {
 }
 
 export interface WithdrawRequestCreatePayload {
-    store_id: string; // always '1' for now
+    store_id: string;
     amount: number;
     store_payment_info_id: string;
 }

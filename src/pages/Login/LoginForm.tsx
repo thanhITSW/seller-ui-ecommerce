@@ -16,6 +16,7 @@ import authApi from "@/api/authApi";
 import { LoginInformation } from "@/types";
 import { setLoginStatus } from "@/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
+import storeApi from "@/api/storeApi";
 
 
 interface LoginFormValues {
@@ -51,13 +52,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
     //   loginInfo.password,
     //   false
     // );
-        setTimeout(() => {
-          notification.success({
-            message: 'Login Successful',
-            description: 'You have successfully logged in.'
-          });
-          setLoading(false);
-        }, 5000);
+    setTimeout(() => {
+      notification.success({
+        message: 'Login Successful',
+        description: 'You have successfully logged in.'
+      });
+      setLoading(false);
+    }, 5000);
   };
 
   const onFieldsChange = () => {
@@ -65,18 +66,56 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
       email: form.getFieldValue("emailOrUsername"),
       password: form.getFieldValue("password"),
     });
-    
+
   };
 
-  const onSubmitLoginForm = useSubmitForm(async (values: LoginInformation) => {
-    // Call API and handle logic
-    const {ok, body} = await authApi.login(values);
-    if (ok) {
-      console.log('login success', body);
-      dispatch(setLoginStatus(true))
-      navigate('/my/error')
+  const onSubmitLoginForm = useSubmitForm(async (values: any) => {
+    setLoading(true);
+    try {
+      // Map lại giá trị form sang LoginInformation
+      const loginPayload: LoginInformation = {
+        email: values.emailOrUsername,
+        password: values.password,
+      };
+      // Call API login
+      const { ok, body } = await authApi.login(loginPayload);
+      if (ok && body?.data) {
+        const { user, accessToken, refreshToken } = body.data;
+        // Call API get store info by user_id
+        const storeRes = await storeApi.getStoreByUserId(user.id);
+        if (storeRes.ok && storeRes.body?.data) {
+          const store_id = storeRes.body.data.store_id;
+          // Save to localStorage
+          localStorage.setItem('user', JSON.stringify(user));
+          localStorage.setItem('accessToken', accessToken);
+          localStorage.setItem('refreshToken', refreshToken);
+          localStorage.setItem('store_id', store_id);
+          dispatch(setLoginStatus(true));
+          notification.success({
+            message: t('Đăng nhập thành công'),
+            description: t('Bạn đã đăng nhập thành công!'),
+          });
+          navigate('/'); // Chuyển hướng sang trang chính
+        } else {
+          notification.error({
+            message: t('Lỗi lấy thông tin cửa hàng'),
+            description: storeRes.body?.message || t('Không thể lấy thông tin cửa hàng'),
+          });
+        }
+      } else {
+        notification.error({
+          message: t('Đăng nhập thất bại'),
+          description: body?.message || t('Sai thông tin đăng nhập'),
+        });
+      }
+    } catch (error) {
+      notification.error({
+        message: t('Đăng nhập thất bại'),
+        description: t('Có lỗi xảy ra, vui lòng thử lại sau'),
+      });
+    } finally {
+      setLoading(false);
     }
-
   });
 
   return (
@@ -92,10 +131,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
 
         <div className="login-form-container">
           <h1 className="welcome-text">
-            Welcome To <span className="brand-name">Annakoot</span>
+            Welcome To <span className="brand-name">Seller</span>
           </h1>
           <p className="login-description">
-            Please sign-in to your account and start the adventure
+            Please sign-in to your account
           </p>
           <Col span={24}>
             <VerticalForm
@@ -108,7 +147,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
               className="login-form"
             >
               <TextInputField
-                label={t("input.emailOrUsername.label")}
+                label={t("Email")}
                 id="emailOrUsername"
                 name="emailOrUsername"
                 placeholder="Enter Your Email Or User Name"
@@ -117,11 +156,11 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
                 rules={[
                   {
                     required: true,
-                    message: et("input.validation.email.required"),
+                    message: et("Yêu cầu nhập email"),
                   },
                   {
                     pattern: EMAIL_REGEX,
-                    message: et("input.validation.email.pattern"),
+                    message: et("Email không hợp lệ"),
                   },
                 ]}
               />
@@ -131,13 +170,13 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
                 name="password"
                 id="password"
                 size="large"
-                label={t("input.password.label")}
+                label={t("Password")}
                 placeholder={t("input.password.placeholder")}
                 maxLength={MAX_LENGTH.PASSWORD}
                 rules={[
                   {
                     required: true,
-                    message: et("input.validation.password.required"),
+                    message: et("Yêu cầu nhập mật khẩu"),
                   },
                 ]}
               />
@@ -146,7 +185,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
                 name="Sign In"
                 buttonClassName="sign-in-button"
                 loading={loading}
-                >
+              >
               </SubmitButton>
 
               <div className="account-options">

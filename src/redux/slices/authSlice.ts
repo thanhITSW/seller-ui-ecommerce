@@ -19,7 +19,7 @@ const userSlice = createSlice({
       state.details = action.payload;
     },
     setLoginStatus(state, action: PayloadAction<boolean>) {
-      state.isLoggedIn = true
+      state.isLoggedIn = action.payload;
     },
     logout: (state) => {
       state.isLoggedIn = false;

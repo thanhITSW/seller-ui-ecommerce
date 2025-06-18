@@ -1,10 +1,10 @@
-import {AuthResponse, HttpResponse, LoginInformation} from '@/types';
+import { AuthResponse, HttpResponse, LoginInformation } from '@/types';
 
-import axiosClient, {handleRequest} from './axiosClient';
+import axiosClient, { handleRequest } from './axiosClient';
 
 const authApi = {
   login: (body: LoginInformation): Promise<HttpResponse<AuthResponse>> => {
-    const url = `/api/public/auth`;
+    const url = `/user/users/login`;
     return handleRequest(axiosClient.post(url, body));
   },
 };

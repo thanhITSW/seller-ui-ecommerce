@@ -2,9 +2,15 @@ import axiosClient, { handleRequest } from './axiosClient';
 import { ReturnRequest, ReturnRequestListResponse, ReturnRequestDetail, ReturnRequestResponse } from '../types/Order/returnRequest.types';
 import { HttpResponse } from '../types/http';
 
+function getStoreId() {
+    const storeId = localStorage.getItem('store_id');
+    if (!storeId) throw new Error('No store_id in localStorage');
+    return storeId;
+}
+
 const returnRequestApi = {
     getList: (params?: any): Promise<HttpResponse<ReturnRequestListResponse>> => {
-        const url = '/order/order-returns/requests?seller_id=1';
+        const url = `/order/order-returns/requests?seller_id=${getStoreId()}`;
         return handleRequest(axiosClient.get(url, { params }));
     },
     getById: (id: string): Promise<HttpResponse<{ code: number; message: string; data: ReturnRequest }>> => {
