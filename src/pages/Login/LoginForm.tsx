@@ -14,7 +14,7 @@ import SubmitButton from "@/components/Forms/SubmitButton";
 import useSubmitForm from "@/hooks/useSubmitForm";
 import authApi from "@/api/authApi";
 import { LoginInformation } from "@/types";
-import { setLoginStatus } from "@/redux/slices/authSlice";
+import { setLoginStatus, setStoreInfo } from "@/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 import storeApi from "@/api/storeApi";
 
@@ -85,17 +85,45 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
         const storeRes = await storeApi.getStoreByUserId(user.id);
         if (storeRes.ok && storeRes.body?.data) {
           const store_id = storeRes.body.data.store_id;
-          // Save to localStorage
-          localStorage.setItem('user', JSON.stringify(user));
-          localStorage.setItem('accessToken', accessToken);
-          localStorage.setItem('refreshToken', refreshToken);
-          localStorage.setItem('store_id', store_id);
-          dispatch(setLoginStatus(true));
-          notification.success({
-            message: t('Đăng nhập thành công'),
-            description: t('Bạn đã đăng nhập thành công!'),
-          });
-          navigate('/'); // Chuyển hướng sang trang chính
+
+          // Get store details to check status
+          const storeDetailsRes = await storeApi.getById(store_id);
+          if (storeDetailsRes.ok && storeDetailsRes.body?.data) {
+            const storeStatus = storeDetailsRes.body.data.status;
+
+            // Save to localStorage
+            localStorage.setItem('user', JSON.stringify(user));
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('store_id', store_id);
+            localStorage.setItem('store', JSON.stringify(storeDetailsRes.body.data));
+            localStorage.setItem('store_status', storeStatus);
+
+            // Save to Redux
+            dispatch(setLoginStatus(true));
+            dispatch(setStoreInfo({ storeId: store_id, storeStatus }));
+
+            notification.success({
+              message: t('Đăng nhập thành công'),
+              description: t('Bạn đã đăng nhập thành công!'),
+            });
+
+            // Redirect based on store status
+            if (storeStatus === 'active') {
+              navigate('/'); // Chuyển hướng sang trang chính
+            } else {
+              navigate('/stores'); // Chuyển hướng sang trang store settings
+              notification.warning({
+                message: t('Cửa hàng chưa được kích hoạt'),
+                description: t('Cửa hàng của bạn đang chờ xét duyệt hoặc bị từ chối. Vui lòng kiểm tra thông tin cửa hàng.'),
+              });
+            }
+          } else {
+            notification.error({
+              message: t('Lỗi lấy thông tin cửa hàng'),
+              description: storeDetailsRes.body?.message || t('Không thể lấy thông tin cửa hàng'),
+            });
+          }
         } else {
           notification.error({
             message: t('Lỗi lấy thông tin cửa hàng'),

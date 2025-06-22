@@ -198,14 +198,6 @@ const RegisterPharmacy: React.FC = () => {
       }
 
       // Gửi API tạo cửa hàng
-      // Debug FormData trước khi gửi
-      console.log("FormData keys:");
-      // Dùng cách này để tránh lỗi TypeScript với iterator
-      const formDataKeys = Array.from(formData.keys());
-      formDataKeys.forEach(key => {
-        console.log(`${key}:`, formData.get(key));
-      });
-
       const storeRes = await storeApi.createStore(formData);
       console.log(storeRes);
       if (!(storeRes as any).body?.data && !(storeRes as any).data?.data) throw new Error('Tạo cửa hàng thất bại!');

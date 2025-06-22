@@ -1,18 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Tag, Modal, Image, Space, Descriptions, Spin, message, Popconfirm, Dropdown, Menu } from 'antd';
+import { Table, Button, Tag, Modal, Image, Space, Descriptions, Spin, message, Popconfirm, Dropdown, Menu, Tabs } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined, StarFilled } from '@ant-design/icons';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined, StarFilled, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
 import { ProductApi, ProductReview } from '../../../types/Product';
 import productApi from '../../../api/productApi';
 import ProductForm from '../../../components/Product/ProductForm';
+import EditProductForm from '../../../components/Product/ProductForm/EditProductForm';
+import AddProductFromCatalogForm from '../../../components/Product/ProductForm/AddProductFromCatalogForm';
 import { Rate } from 'antd';
+import styles from '../../../styles/Product/Product.module.scss';
+
+const { TabPane } = Tabs;
 
 const ProductList: React.FC = () => {
-    const [products, setProducts] = useState<ProductApi[]>([]);
+    const [approvedProducts, setApprovedProducts] = useState<ProductApi[]>([]);
+    const [pendingProducts, setPendingProducts] = useState<ProductApi[]>([]);
+    const [activeTab, setActiveTab] = useState<string>('approved');
     const [loading, setLoading] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState<ProductApi | null>(null);
     const [detailModalVisible, setDetailModalVisible] = useState(false);
     const [formVisible, setFormVisible] = useState(false);
+    const [editFormVisible, setEditFormVisible] = useState(false);
+    const [addFromCatalogVisible, setAddFromCatalogVisible] = useState(false);
     const [formLoading, setFormLoading] = useState(false);
     const [editProduct, setEditProduct] = useState<ProductApi | null>(null);
     const [deleteId, setDeleteId] = useState<string | null>(null);
@@ -24,12 +33,24 @@ const ProductList: React.FC = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            const response = await productApi.getProducts();
-            if (!response.body) return;
-            if (response.ok && response.body.code === 0) {
-                setProducts(response.body.data);
+            // Fetch both approved and pending products in parallel
+            const [approvedResponse, pendingResponse] = await Promise.all([
+                productApi.getProducts(),
+                productApi.getPendingProducts()
+            ]);
+
+            if (approvedResponse.ok && approvedResponse.body?.code === 0) {
+                setApprovedProducts(approvedResponse.body.data);
             } else {
-                message.error('Failed to fetch products');
+                message.error('Failed to fetch approved products');
+                setApprovedProducts([]);
+            }
+
+            if (pendingResponse.ok && pendingResponse.body?.code === 0) {
+                setPendingProducts(pendingResponse.body.data);
+            } else {
+                message.error('Failed to fetch pending products');
+                setPendingProducts([]);
             }
         } catch (error) {
             message.error('Failed to fetch products');
@@ -44,15 +65,14 @@ const ProductList: React.FC = () => {
 
     const handleAdd = () => {
         setEditProduct(null);
-        setFormVisible(false);
-        setTimeout(() => {
-            setFormVisible(true);
-        }, 0);
+        setAddFromCatalogVisible(true);
     };
+
     const handleEdit = (product: ProductApi) => {
         setEditProduct(product);
-        setFormVisible(true);
+        setEditFormVisible(true);
     };
+
     const handleDelete = async (id: string) => {
         setLoading(true);
         try {
@@ -70,6 +90,7 @@ const ProductList: React.FC = () => {
             setDeleteId(null);
         }
     };
+
     const handleFormSubmit = async (formData: FormData) => {
         setFormLoading(true);
         try {
@@ -82,6 +103,8 @@ const ProductList: React.FC = () => {
             if (response.ok && response.body?.code === 0) {
                 message.success(editProduct ? 'Cập nhật sản phẩm thành công' : 'Thêm sản phẩm thành công');
                 setFormVisible(false);
+                setEditFormVisible(false);
+                setAddFromCatalogVisible(false);
                 fetchProducts();
             } else {
                 message.error(response.body?.message || 'Lưu sản phẩm thất bại');
@@ -136,12 +159,13 @@ const ProductList: React.FC = () => {
             title: 'Image',
             dataIndex: 'url_image',
             key: 'url_image',
-            render: (url: string) => <Image src={url} alt="product" width={60} height={60} />,
+            render: (url: string) => <Image src={url} alt="product" width={60} height={60} style={{ objectFit: 'cover', borderRadius: '4px' }} />,
         },
         {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
+            render: (name: string) => <span style={{ fontWeight: 500 }}>{name}</span>,
         },
         {
             title: 'Brand',
@@ -152,17 +176,13 @@ const ProductList: React.FC = () => {
             title: 'Retail Price',
             dataIndex: 'retail_price',
             key: 'retail_price',
-            render: (price: string) => `${Number(price).toLocaleString()}₫`,
+            render: (price: string) => <span style={{ fontWeight: 500, color: '#f5222d' }}>{Number(price).toLocaleString()}₫</span>,
         },
         {
             title: 'Stock',
             dataIndex: 'stock',
             key: 'stock',
-        },
-        {
-            title: 'Seller',
-            dataIndex: 'seller_name',
-            key: 'seller_name',
+            render: (stock: number) => <Tag color={stock > 10 ? 'green' : stock > 0 ? 'orange' : 'red'}>{stock}</Tag>,
         },
         {
             title: 'Active',
@@ -248,20 +268,69 @@ const ProductList: React.FC = () => {
     };
 
     return (
-        <div className="product-list">
-            <div style={{ marginBottom: 16, display: 'flex', justifyContent: 'flex-end' }}>
-                <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd}>
+        <div className={styles['product-list']}>
+            <div style={{ marginBottom: 20, display: 'flex', justifyContent: 'flex-end' }}>
+                <Button type="primary" icon={<PlusOutlined />} onClick={handleAdd} size="large">
                     Thêm sản phẩm
                 </Button>
             </div>
-            <Spin spinning={loading}>
-                <Table
-                    columns={columns}
-                    dataSource={products}
-                    rowKey="id"
-                    pagination={{ pageSize: 10 }}
-                />
-            </Spin>
+
+            <div className={styles['product-tabs-container']}>
+                <Tabs
+                    defaultActiveKey="approved"
+                    onChange={(key) => setActiveTab(key)}
+                    type="card"
+                    size="large"
+                >
+                    <TabPane
+                        tab={
+                            <span>
+                                <CheckCircleOutlined />
+                                Sản phẩm đã duyệt
+                                <Tag color="green" style={{ marginLeft: 8 }}>
+                                    {approvedProducts.length}
+                                </Tag>
+                            </span>
+                        }
+                        key="approved"
+                    >
+                        <Spin spinning={loading && activeTab === 'approved'}>
+                            <Table
+                                columns={columns}
+                                dataSource={approvedProducts}
+                                rowKey="id"
+                                pagination={{ pageSize: 10 }}
+                                className={styles['product-table']}
+                                style={{ marginTop: '16px' }}
+                            />
+                        </Spin>
+                    </TabPane>
+                    <TabPane
+                        tab={
+                            <span>
+                                <ClockCircleOutlined />
+                                Sản phẩm chờ duyệt
+                                <Tag color="orange" style={{ marginLeft: 8 }}>
+                                    {pendingProducts.length}
+                                </Tag>
+                            </span>
+                        }
+                        key="pending"
+                    >
+                        <Spin spinning={loading && activeTab === 'pending'}>
+                            <Table
+                                columns={columns}
+                                dataSource={pendingProducts}
+                                rowKey="id"
+                                pagination={{ pageSize: 10 }}
+                                className={styles['product-table']}
+                                style={{ marginTop: '16px' }}
+                            />
+                        </Spin>
+                    </TabPane>
+                </Tabs>
+            </div>
+
             <Modal
                 title={selectedProduct?.name}
                 open={detailModalVisible}
@@ -300,13 +369,25 @@ const ProductList: React.FC = () => {
                     </Descriptions>
                 )}
             </Modal>
-            <ProductForm
-                visible={formVisible}
-                onCancel={() => setFormVisible(false)}
+            <AddProductFromCatalogForm
+                visible={addFromCatalogVisible}
+                onCancel={() => setAddFromCatalogVisible(false)}
                 onSubmit={handleFormSubmit}
-                initialValues={editProduct || undefined}
                 loading={formLoading}
             />
+            {editProduct && (
+                <EditProductForm
+                    visible={editFormVisible}
+                    onCancel={() => setEditFormVisible(false)}
+                    onSubmit={(formData) => {
+                        if (editProduct) {
+                            handleFormSubmit(formData);
+                        }
+                    }}
+                    initialValues={editProduct}
+                    loading={formLoading}
+                />
+            )}
             <Modal
                 title="Đánh giá sản phẩm"
                 open={reviewModalVisible}

@@ -70,12 +70,6 @@ const StoreForm: React.FC<StoreFormProps> = ({
                     <Input />
                 </Form.Item>
                 <Form.Item
-                    name="address_line"
-                    label="Address Line"
-                >
-                    <Input />
-                </Form.Item>
-                <Form.Item
                     name="province_name"
                     label="Province/City"
                 >

@@ -597,3 +597,242 @@
         margin-bottom: 10px;
     }
 }
+
+.profile-section-title {
+    width: 100%;
+    max-width: 900px;
+    margin: 40px 0 16px 0;
+    text-align: left;
+
+    h2 {
+        font-size: 1.6rem;
+        font-weight: 600;
+        color: var(--text-color);
+        margin: 0;
+        padding-bottom: 8px;
+        border-bottom: 1px solid #eaeaea;
+    }
+}
+
+.profile-status {
+    margin: 8px 0;
+
+    .ant-tag {
+        font-size: 0.95rem;
+        padding: 4px 10px;
+        border-radius: 4px;
+    }
+}
+
+.profile-licenses {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    width: 100%;
+    max-width: 900px;
+}
+
+.license-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 8px;
+    background: rgba(245, 245, 245, 0.5);
+    border-radius: 14px;
+    padding: 24px;
+    border: 1px solid #eaeaea;
+}
+
+.license-group-title {
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 0 0 8px 0;
+    display: flex;
+    align-items: center;
+    position: relative;
+
+    &::before {
+        content: '';
+        display: block;
+        width: 6px;
+        height: 24px;
+        background: var(--primary-color);
+        border-radius: 4px;
+        margin-right: 12px;
+    }
+}
+
+.license-item {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    border: 1px solid #f0f0f0;
+    transition: all 0.2s ease;
+
+    &:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        transform: translateY(-2px);
+    }
+
+    .license-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #f0f0f0;
+        padding-bottom: 12px;
+
+        .license-title {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .ant-tag {
+            margin: 0;
+            font-size: 0.9rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        .update-tag {
+            background-color: #faad14;
+            color: #fff;
+            margin-right: 8px;
+            font-weight: 500;
+            border: none;
+        }
+    }
+
+    .license-info {
+        p {
+            margin: 6px 0;
+            font-size: 1rem;
+            display: flex;
+            flex-wrap: wrap;
+
+            strong {
+                min-width: 120px;
+                display: inline-block;
+                color: #555;
+            }
+        }
+    }
+
+    .license-image {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+        margin: 8px 0;
+        background: #f9f9f9;
+        padding: 12px;
+        border-radius: 8px;
+
+        img {
+            max-width: 100%;
+            max-height: 300px;
+            object-fit: contain;
+            border-radius: 6px;
+            box-shadow: 0 1px 6px rgba(0, 0, 0, 0.1);
+        }
+    }
+
+    .license-actions {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+
+        .ant-btn {
+            border-radius: 6px;
+        }
+    }
+}
+
+.profile-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    width: 100%;
+    max-width: 900px;
+    margin-bottom: 40px;
+}
+
+.photo-item {
+    background: var(--card-background);
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+
+    img {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+        border-radius: 8px;
+    }
+
+    .photo-description {
+        margin: 0;
+        font-size: 0.95rem;
+        color: #666;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-section-title {
+        margin: 24px 0 12px 0;
+        padding: 0 16px;
+
+        h2 {
+            font-size: 1.3rem;
+        }
+    }
+
+    .profile-licenses,
+    .profile-photos {
+        padding: 0 16px;
+    }
+
+    .license-item {
+        padding: 16px;
+    }
+
+    .license-actions {
+        flex-wrap: wrap;
+    }
+
+    .profile-photos {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 16px;
+    }
+
+    .photo-item {
+        padding: 12px;
+
+        img {
+            height: 150px;
+        }
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-photos {
+        grid-template-columns: 1fr;
+    }
+}

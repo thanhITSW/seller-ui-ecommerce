@@ -64,6 +64,7 @@ export interface ProductApi {
     url_registration_license: string;
     product_type_id: string;
     category_id: string;
+    import_date?: string;
     return_policy: {
         is_returnable: boolean;
         return_period: number;

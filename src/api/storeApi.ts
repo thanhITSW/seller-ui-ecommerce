@@ -49,6 +49,12 @@ const storeApi = {
             headers: { 'Content-Type': 'multipart/form-data' }
         }));
     },
+    updateLicense: (storeId: string, licenseId: string, data: FormData): Promise<HttpResponse<any>> => {
+        const url = `/store/stores/${storeId}/license/${licenseId}`;
+        return handleRequest(axiosClient.patch(url, data, {
+            headers: { 'Content-Type': 'multipart/form-data' }
+        }));
+    },
 };
 
 export default storeApi; 

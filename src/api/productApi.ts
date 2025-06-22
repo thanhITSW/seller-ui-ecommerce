@@ -64,6 +64,10 @@ const productApi = {
         const url = `/product/reviews/delete-by-manager/${reviewId}`;
         return handleRequest(axiosClient.delete(url));
     },
+    getCatalogProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: any[] }>> => {
+        const url = '/product/catalog-products';
+        return handleRequest(axiosClient.get(url));
+    },
 };
 
 export default productApi; 
