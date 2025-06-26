@@ -5,15 +5,18 @@ import MainPageLayout from './components/Layout/MainPageLayout';
 import Error404 from './components/Errors/Error404';
 import ProductManagement from './pages/Product/ProductManagement';
 import ProductApproval from './pages/Product/ProductApproval';
-import BrandPage from './pages/Product/Brand';
+import SuggestionProductPage from './pages/Product/SuggestionProduct';
 import ProductTypePage from './pages/Product/ProductType/ProductType';
 import UserPage from './pages/User/User';
 import VoucherPage from './pages/Voucher/Voucher';
 import StorePage from './pages/Store/Store';
 import PaymentPage from './pages/Payment/Payment';
 import ShipmentPage from './pages/Shipment/Shipment';
+import PromotionPage from './pages/Promotion/Promotion';
+import ProductPromotionManager from './pages/Promotion/ProductPromotionManager';
 import { OrderPage, ReturnRequestPage } from './pages/Order';
 import WithdrawRequestPage from './pages/WithdrawRequest';
+import ProductReviewManager from './pages/Product/ProductReviewManager';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -78,9 +81,12 @@ function App() {
           <Route path="/" element={<MainPageLayout />}>
             <Route path="products" element={<ProductManagement />} />
             <Route path="products/approval" element={<ProductApproval />} />
-            <Route path="products/brand" element={<BrandPage />} />
+            <Route path="products/suggestion" element={<SuggestionProductPage />} />
             <Route path="products/type" element={<ProductTypePage />} />
+            <Route path="products/reviews" element={<ProductReviewManager />} />
             <Route path="customers" element={<UserPage />} />
+            <Route path="promotions" element={<PromotionPage />} />
+            <Route path="promotions/product" element={<ProductPromotionManager />} />
             <Route path="vouchers" element={<VoucherPage />} />
             <Route path="payments" element={<PaymentPage />} />
             <Route path="shipments" element={<ShipmentPage />} />

@@ -12,6 +12,7 @@ interface ProductFormProps {
     onSubmit: (formData: FormData) => void;
     initialValues?: ProductApi;
     loading: boolean;
+    hideSellerFields?: boolean;
 }
 
 const ProductForm: React.FC<ProductFormProps> = ({
@@ -19,7 +20,8 @@ const ProductForm: React.FC<ProductFormProps> = ({
     onCancel,
     onSubmit,
     initialValues,
-    loading
+    loading,
+    hideSellerFields
 }) => {
     const [form] = Form.useForm();
     const [productTypes, setProductTypes] = useState<ProductType[]>([]);
@@ -37,28 +39,36 @@ const ProductForm: React.FC<ProductFormProps> = ({
         });
     }, []);
 
+    // Reset form và các state chỉ khi thêm mới
+    const resetFormData = () => {
+        form.resetFields();
+        setImageFile(null);
+        setLicenseFile(null);
+        setImagePreview(null);
+        setLicensePreview(null);
+        setCategories([]);
+        setAttributes([]);
+    };
+
     // Reset form and files when modal opens/closes or switching products
     useEffect(() => {
         if (visible) {
-            form.resetFields();
-            setImageFile(null);
-            setLicenseFile(null);
             if (initialValues) {
+                // Đây là chế độ edit - không reset, chỉ load dữ liệu cũ
+                // Đây là chế độ edit
                 if (initialValues.url_image) setImagePreview(initialValues.url_image);
                 if (initialValues.url_registration_license) setLicensePreview(initialValues.url_registration_license);
-                else setLicensePreview(null);
-                // Set static fields, ép giá về số nguyên
+
+                // Set các field cơ bản trước
                 form.setFieldsValue({
                     name: initialValues.name,
                     brand: initialValues.brand,
-                    import_price: parseInt(initialValues.import_price),
-                    retail_price: parseInt(initialValues.retail_price),
-                    stock: initialValues.stock,
                     seller_id: initialValues.seller_id,
                     seller_name: initialValues.seller_name,
                     product_type_id: initialValues.product_type_id,
                 });
-                // Fetch categories/attributes and set dynamic fields after fetch
+
+                // Fetch categories/attributes và set dynamic fields sau khi fetch
                 setFetching(true);
                 Promise.all([
                     productApi.getCategoriesByType(initialValues.product_type_id),
@@ -66,42 +76,38 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 ]).then(([catRes, attrRes]) => {
                     if (catRes.ok && catRes.body?.data) setCategories(catRes.body.data);
                     if (attrRes.ok && attrRes.body?.data) setAttributes(attrRes.body.data);
+
                     // Set category
                     form.setFieldsValue({ category_id: initialValues.category_id });
+
                     // Set attribute fields
                     if (initialValues.product_details) {
                         Object.entries(initialValues.product_details).forEach(([key, value]) => {
-                            form.setFieldsValue({ [key]: value });
-                        });
-                    }
-                    // Set return_policy fields
-                    if (initialValues.return_policy) {
-                        form.setFieldsValue({
-                            is_returnable: initialValues.return_policy.is_returnable,
-                            return_period: initialValues.return_policy.return_period,
-                            is_exchangeable: initialValues.return_policy.is_exchangeable,
-                            return_conditions: initialValues.return_policy.return_conditions,
+                            if (key === 'Thành phần') {
+                                let parsedValue = value;
+                                if (typeof value === 'string') {
+                                    try {
+                                        parsedValue = JSON.parse(value);
+                                    } catch {
+                                        parsedValue = [];
+                                    }
+                                }
+                                form.setFieldsValue({ [key]: parsedValue });
+                            } else {
+                                form.setFieldsValue({ [key]: value });
+                            }
                         });
                     }
                 }).finally(() => setFetching(false));
             } else {
-                setImagePreview(null);
-                setLicensePreview(null);
-                // Reset toàn bộ form khi thêm mới
-                form.resetFields();
-                setImageFile(null);
-                setLicenseFile(null);
-                setCategories([]);
-                setAttributes([]);
+                // Đây là chế độ thêm mới - reset
+                resetFormData();
             }
         } else {
-            form.resetFields();
-            setImageFile(null);
-            setLicenseFile(null);
-            setImagePreview(null);
-            setLicensePreview(null);
-            setCategories([]);
-            setAttributes([]);
+            // Modal đóng - chỉ reset khi đang ở chế độ thêm mới
+            if (!initialValues) {
+                resetFormData();
+            }
         }
     }, [visible, initialValues]);
 
@@ -143,6 +149,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                 message.error('Vui lòng tải lên giấy phép');
                 return;
             }
+
             // Build product_details from attributes
             const product_details: Record<string, any> = {};
             attributes.forEach(attr => {
@@ -152,30 +159,22 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     product_details[attr.attribute_name] = values[attr.attribute_name];
                 }
             });
-            // Build return_policy (simple demo, can expand)
-            const return_policy = {
-                is_returnable: values.is_returnable,
-                return_period: values.return_period,
-                is_exchangeable: values.is_exchangeable,
-                return_conditions: values.return_conditions
-            };
+
             const formData = new FormData();
             formData.append('name', values.name);
             formData.append('brand', values.brand);
-            formData.append('import_price', values.import_price);
-            formData.append('retail_price', values.retail_price);
-            formData.append('stock', values.stock);
             formData.append('seller_id', values.seller_id);
             formData.append('seller_name', values.seller_name);
             formData.append('product_type_id', values.product_type_id);
             formData.append('category_id', values.category_id);
-            formData.append('return_policy', JSON.stringify(return_policy));
             formData.append('product_details', JSON.stringify(product_details));
+
             if (imageFile) formData.append('image', imageFile);
             if (licenseFile) formData.append('registration_license', licenseFile);
+
             onSubmit(formData);
         } catch (error) {
-            // Validation error
+            console.error('Validation failed:', error);
         }
     };
 
@@ -189,24 +188,40 @@ const ProductForm: React.FC<ProductFormProps> = ({
             if (catRes.ok && catRes.body?.data) setCategories(catRes.body.data);
             if (attrRes.ok && attrRes.body?.data) setAttributes(attrRes.body.data);
         }).finally(() => setFetching(false));
-        // Reset category and attribute fields
+
+        // Reset category và attribute fields
         form.setFieldsValue({ category_id: undefined });
-        attributes.forEach(attr => form.setFieldsValue({ [attr.attribute_name]: undefined }));
+        // Reset các attribute fields về undefined
+        const currentValues = form.getFieldsValue();
+        const resetValues: any = {};
+        attributes.forEach(attr => {
+            resetValues[attr.attribute_name] = undefined;
+        });
+        form.setFieldsValue(resetValues);
+    };
+
+    const handleCancel = () => {
+        // Chỉ reset khi đang ở chế độ thêm mới
+        if (!initialValues) {
+            resetFormData();
+        }
+        onCancel();
     };
 
     return (
         <Modal
             title={initialValues ? 'Edit Product' : 'Add Product'}
             open={visible}
-            onCancel={onCancel}
+            onCancel={handleCancel}
             footer={null}
             width={700}
+            destroyOnClose={!initialValues} // Chỉ destroy khi thêm mới
         >
             <Spin spinning={fetching}>
                 <Form
                     form={form}
                     layout="vertical"
-                    initialValues={initialValues}
+                    preserve={!!initialValues} // Preserve khi edit, không preserve khi thêm mới
                 >
                     <Form.Item name="name" label="Name" rules={[{ required: true, message: 'Vui lòng nhập tên sản phẩm' }]}>
                         <Input />
@@ -214,23 +229,17 @@ const ProductForm: React.FC<ProductFormProps> = ({
                     <Form.Item name="brand" label="Brand" rules={[{ required: true, message: 'Vui lòng nhập brand' }]}>
                         <Input />
                     </Form.Item>
-                    <Form.Item name="import_price" label="Import Price" rules={[{ required: true, message: 'Vui lòng nhập giá nhập' }]}>
-                        <Input type="number" min={0} />
-                    </Form.Item>
-                    <Form.Item name="retail_price" label="Retail Price" rules={[{ required: true, message: 'Vui lòng nhập giá bán' }]}>
-                        <Input type="number" min={0} />
-                    </Form.Item>
-                    <Form.Item name="stock" label="Stock" rules={[{ required: true, message: 'Vui lòng nhập tồn kho' }]}>
-                        <Input type="number" min={0} />
-                    </Form.Item>
-                    <Form.Item name="seller_id" label="Seller ID" rules={[{ required: true, message: 'Vui lòng nhập seller id' }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="seller_name" label="Seller Name" rules={[{ required: true, message: 'Vui lòng nhập seller name' }]}>
-                        <Input />
-                    </Form.Item>
-                    <Form.Item name="product_type_id" label="Product Type" rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm' }]}
-                    >
+                    {!hideSellerFields && (
+                        <>
+                            <Form.Item name="seller_id" label="Seller ID" rules={[{ required: true, message: 'Vui lòng nhập seller id' }]}>
+                                <Input />
+                            </Form.Item>
+                            <Form.Item name="seller_name" label="Seller Name" rules={[{ required: true, message: 'Vui lòng nhập seller name' }]}>
+                                <Input />
+                            </Form.Item>
+                        </>
+                    )}
+                    <Form.Item name="product_type_id" label="Product Type" rules={[{ required: true, message: 'Vui lòng chọn loại sản phẩm' }]}>
                         <Select
                             placeholder="Chọn loại sản phẩm"
                             onChange={handleProductTypeChange}
@@ -242,20 +251,21 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             ))}
                         </Select>
                     </Form.Item>
-                    <Form.Item name="category_id" label="Category" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}
-                    >
+                    <Form.Item name="category_id" label="Category" rules={[{ required: true, message: 'Vui lòng chọn danh mục' }]}>
                         <Select placeholder="Chọn danh mục">
                             {categories.map(cat => (
                                 <Select.Option key={cat.id} value={cat.id}>{cat.category_name}</Select.Option>
                             ))}
                         </Select>
                     </Form.Item>
+
                     {/* Dynamic attribute fields */}
                     {attributes.map(attr => (
                         attr.attribute_name === 'Thành phần' ? (
                             <Form.List name={attr.attribute_name} key={attr.id}>
                                 {(fields, { add, remove }) => (
                                     <div>
+                                        <label style={{ marginBottom: 8, display: 'block' }}>{attr.attribute_name}</label>
                                         {fields.map(({ key, name, ...restField }) => (
                                             <div key={key} style={{ display: 'flex', gap: 8, marginBottom: 8 }}>
                                                 <Form.Item
@@ -292,25 +302,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             </Form.Item>
                         )
                     ))}
-                    {/* Return policy fields */}
-                    <Form.Item name="is_returnable" label="Đổi trả" valuePropName="checked">
-                        <Select>
-                            <Select.Option value={true}>Có</Select.Option>
-                            <Select.Option value={false}>Không</Select.Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="return_period" label="Thời gian đổi trả (ngày)">
-                        <Input type="number" min={0} />
-                    </Form.Item>
-                    <Form.Item name="is_exchangeable" label="Đổi hàng" valuePropName="checked">
-                        <Select>
-                            <Select.Option value={true}>Có</Select.Option>
-                            <Select.Option value={false}>Không</Select.Option>
-                        </Select>
-                    </Form.Item>
-                    <Form.Item name="return_conditions" label="Điều kiện đổi trả">
-                        <Input.TextArea rows={2} />
-                    </Form.Item>
+
                     {/* File upload */}
                     <Form.Item label="Ảnh sản phẩm" required={initialValues ? false : true}>
                         <Upload
@@ -319,6 +311,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             onChange={info => handleFileChange(info, 'image')}
                             accept="image/*"
                             showUploadList={false}
+                            fileList={[]} // Thêm fileList rỗng để reset
                         >
                             <Button icon={<UploadOutlined />}>Chọn ảnh</Button>
                         </Upload>
@@ -333,6 +326,7 @@ const ProductForm: React.FC<ProductFormProps> = ({
                             onChange={info => handleFileChange(info, 'license')}
                             accept="image/*,application/pdf"
                             showUploadList={false}
+                            fileList={[]} // Thêm fileList rỗng để reset
                         >
                             <Button icon={<UploadOutlined />}>Chọn file</Button>
                         </Upload>
@@ -359,4 +353,4 @@ const ProductForm: React.FC<ProductFormProps> = ({
     );
 };
 
-export default ProductForm; 
+export default ProductForm;

@@ -79,11 +79,27 @@ export interface ProductApi {
 export interface ProductReview {
     id: string;
     user_id: string;
+    seller_id?: string;
     order_id: string;
     user_fullname: string;
     product_id: string;
+    product_name?: string;
+    product_image?: string;
     comment: string;
     rating: number;
+    url_images_related?: string[];
+    is_edited?: boolean;
+    createdAt: string;
+    updatedAt: string;
+    response_review?: ResponseReview | null;
+}
+
+export interface ResponseReview {
+    id: string;
+    review_id: string;
+    seller_name: string;
+    response_comment: string;
+    url_image_related?: string | null;
     createdAt: string;
     updatedAt: string;
 }

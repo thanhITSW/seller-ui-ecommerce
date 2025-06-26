@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Tag, Modal, Image, Space, Descriptions, Spin, message, Popconfirm, Dropdown, Menu, Tabs } from 'antd';
+import { Table, Button, Modal, Image, Space, Descriptions, Spin, Popconfirm, Dropdown, Menu, Tag, notification } from 'antd';
 import type { ColumnsType } from 'antd/es/table';
-import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined, StarFilled, CheckCircleOutlined, ClockCircleOutlined } from '@ant-design/icons';
+import { EyeOutlined, PlusOutlined, EditOutlined, DeleteOutlined, MoreOutlined, StarFilled } from '@ant-design/icons';
 import { ProductApi, ProductReview } from '../../../types/Product';
 import productApi from '../../../api/productApi';
 import ProductForm from '../../../components/Product/ProductForm';
@@ -9,8 +9,7 @@ import EditProductForm from '../../../components/Product/ProductForm/EditProduct
 import AddProductFromCatalogForm from '../../../components/Product/ProductForm/AddProductFromCatalogForm';
 import { Rate } from 'antd';
 import styles from '../../../styles/Product/Product.module.scss';
-
-const { TabPane } = Tabs;
+import StatusTabs from '../../../components/Common/StatusTabs';
 
 const ProductList: React.FC = () => {
     const [approvedProducts, setApprovedProducts] = useState<ProductApi[]>([]);
@@ -33,7 +32,6 @@ const ProductList: React.FC = () => {
     const fetchProducts = async () => {
         setLoading(true);
         try {
-            // Fetch both approved and pending products in parallel
             const [approvedResponse, pendingResponse] = await Promise.all([
                 productApi.getProducts(),
                 productApi.getPendingProducts()
@@ -42,18 +40,18 @@ const ProductList: React.FC = () => {
             if (approvedResponse.ok && approvedResponse.body?.code === 0) {
                 setApprovedProducts(approvedResponse.body.data);
             } else {
-                message.error('Failed to fetch approved products');
+                notification.error({ message: 'Lấy danh sách sản phẩm đã duyệt thất bại' });
                 setApprovedProducts([]);
             }
 
             if (pendingResponse.ok && pendingResponse.body?.code === 0) {
                 setPendingProducts(pendingResponse.body.data);
             } else {
-                message.error('Failed to fetch pending products');
+                notification.error({ message: 'Lấy danh sách sản phẩm chờ duyệt thất bại' });
                 setPendingProducts([]);
             }
         } catch (error) {
-            message.error('Failed to fetch products');
+            notification.error({ message: 'Lấy danh sách sản phẩm thất bại' });
         } finally {
             setLoading(false);
         }
@@ -78,13 +76,13 @@ const ProductList: React.FC = () => {
         try {
             const response = await productApi.deleteProduct(id);
             if (response.ok && response.body?.code === 0) {
-                message.success('Xóa sản phẩm thành công');
+                notification.success({ message: 'Xóa sản phẩm thành công' });
                 fetchProducts();
             } else {
-                message.error(response.body?.message || 'Xóa sản phẩm thất bại');
+                notification.error({ message: response.body?.message || 'Xóa sản phẩm thất bại' });
             }
         } catch (error) {
-            message.error('Xóa sản phẩm thất bại');
+            notification.error({ message: 'Xóa sản phẩm thất bại' });
         } finally {
             setLoading(false);
             setDeleteId(null);
@@ -101,16 +99,16 @@ const ProductList: React.FC = () => {
                 response = await productApi.addProduct(formData);
             }
             if (response.ok && response.body?.code === 0) {
-                message.success(editProduct ? 'Cập nhật sản phẩm thành công' : 'Thêm sản phẩm thành công');
+                notification.success({ message: editProduct ? 'Cập nhật sản phẩm thành công' : 'Thêm sản phẩm thành công' });
                 setFormVisible(false);
                 setEditFormVisible(false);
                 setAddFromCatalogVisible(false);
                 fetchProducts();
             } else {
-                message.error(response.body?.message || 'Lưu sản phẩm thất bại');
+                notification.error({ message: response.body?.message || 'Lưu sản phẩm thất bại' });
             }
         } catch (error) {
-            message.error('Lưu sản phẩm thất bại');
+            notification.error({ message: 'Lưu sản phẩm thất bại' });
         } finally {
             setFormLoading(false);
         }
@@ -126,11 +124,11 @@ const ProductList: React.FC = () => {
                 setReviews(response.body.data);
             } else {
                 setReviews([]);
-                message.error(response.body?.message || 'Không thể tải đánh giá');
+                notification.error({ message: response.body?.message || 'Không thể tải đánh giá' });
             }
         } catch (error) {
             setReviews([]);
-            message.error('Không thể tải đánh giá');
+            notification.error({ message: 'Không thể tải đánh giá' });
         } finally {
             setReviewLoading(false);
         }
@@ -141,14 +139,13 @@ const ProductList: React.FC = () => {
         try {
             const response = await productApi.deleteReviewByManager(reviewId);
             if (response.ok && response.body?.code === 0) {
-                message.success('Xóa đánh giá thành công');
-                // Refresh reviews
+                notification.success({ message: 'Xóa đánh giá thành công' });
                 if (reviewProductId) handleViewReviews(reviewProductId);
             } else {
-                message.error(response.body?.message || 'Xóa đánh giá thất bại');
+                notification.error({ message: response.body?.message || 'Xóa đánh giá thất bại' });
             }
         } catch (error) {
-            message.error('Xóa đánh giá thất bại');
+            notification.error({ message: 'Xóa đánh giá thất bại' });
         } finally {
             setReviewLoading(false);
         }
@@ -156,42 +153,42 @@ const ProductList: React.FC = () => {
 
     const columns: ColumnsType<ProductApi> = [
         {
-            title: 'Image',
+            title: 'Hình ảnh',
             dataIndex: 'url_image',
             key: 'url_image',
             render: (url: string) => <Image src={url} alt="product" width={60} height={60} style={{ objectFit: 'cover', borderRadius: '4px' }} />,
         },
         {
-            title: 'Name',
+            title: 'Tên sản phẩm',
             dataIndex: 'name',
             key: 'name',
             render: (name: string) => <span style={{ fontWeight: 500 }}>{name}</span>,
         },
         {
-            title: 'Brand',
+            title: 'Thương hiệu',
             dataIndex: 'brand',
             key: 'brand',
         },
         {
-            title: 'Retail Price',
+            title: 'Giá bán lẻ',
             dataIndex: 'retail_price',
             key: 'retail_price',
             render: (price: string) => <span style={{ fontWeight: 500, color: '#f5222d' }}>{Number(price).toLocaleString()}₫</span>,
         },
         {
-            title: 'Stock',
+            title: 'Tồn kho',
             dataIndex: 'stock',
             key: 'stock',
             render: (stock: number) => <Tag color={stock > 10 ? 'green' : stock > 0 ? 'orange' : 'red'}>{stock}</Tag>,
         },
         {
-            title: 'Active',
+            title: 'Trạng thái',
             dataIndex: 'active_status',
             key: 'active_status',
-            render: (status: string) => <Tag color={status === 'active' ? 'green' : 'orange'}>{status}</Tag>,
+            render: (status: string) => <Tag color={status === 'active' ? 'green' : 'orange'}>{status === 'active' ? 'Hoạt động' : 'Không hoạt động'}</Tag>,
         },
         {
-            title: 'Actions',
+            title: 'Hành động',
             key: 'actions',
             render: (_: any, record: ProductApi) => {
                 const menu = (
@@ -226,7 +223,6 @@ const ProductList: React.FC = () => {
             <Descriptions bordered column={1} size="small">
                 {Object.entries(details).map(([key, value]) => {
                     if (Array.isArray(value)) {
-                        // Render array of objects (e.g. Thành phần)
                         if (value.length > 0 && typeof value[0] === 'object') {
                             return (
                                 <Descriptions.Item label={key} key={key}>
@@ -239,7 +235,6 @@ const ProductList: React.FC = () => {
                                 </Descriptions.Item>
                             );
                         } else {
-                            // Render array of strings
                             return (
                                 <Descriptions.Item label={key} key={key}>
                                     <ul style={{ margin: 0, paddingLeft: 16 }}>
@@ -249,7 +244,6 @@ const ProductList: React.FC = () => {
                             );
                         }
                     } else if (typeof value === 'string') {
-                        // Render long text as pre if it contains newlines
                         if (value.includes('\n')) {
                             return (
                                 <Descriptions.Item label={key} key={key}>
@@ -259,13 +253,49 @@ const ProductList: React.FC = () => {
                         }
                         return <Descriptions.Item label={key} key={key}>{value}</Descriptions.Item>;
                     } else {
-                        // Render other types as string
                         return <Descriptions.Item label={key} key={key}>{String(value)}</Descriptions.Item>;
                     }
                 })}
             </Descriptions>
         );
     };
+
+    const statusTabs = [
+        {
+            key: 'approved',
+            label: 'Sản phẩm đã duyệt',
+            count: approvedProducts.length,
+            content: (
+                <Spin spinning={loading && activeTab === 'approved'}>
+                    <Table
+                        columns={columns}
+                        dataSource={approvedProducts}
+                        rowKey="id"
+                        pagination={{ pageSize: 10 }}
+                        className={styles['product-table']}
+                        style={{ marginTop: '16px' }}
+                    />
+                </Spin>
+            )
+        },
+        {
+            key: 'pending',
+            label: 'Sản phẩm chờ duyệt',
+            count: pendingProducts.length,
+            content: (
+                <Spin spinning={loading && activeTab === 'pending'}>
+                    <Table
+                        columns={columns}
+                        dataSource={pendingProducts}
+                        rowKey="id"
+                        pagination={{ pageSize: 10 }}
+                        className={styles['product-table']}
+                        style={{ marginTop: '16px' }}
+                    />
+                </Spin>
+            )
+        }
+    ];
 
     return (
         <div className={styles['product-list']}>
@@ -276,59 +306,11 @@ const ProductList: React.FC = () => {
             </div>
 
             <div className={styles['product-tabs-container']}>
-                <Tabs
-                    defaultActiveKey="approved"
-                    onChange={(key) => setActiveTab(key)}
-                    type="card"
-                    size="large"
-                >
-                    <TabPane
-                        tab={
-                            <span>
-                                <CheckCircleOutlined />
-                                Sản phẩm đã duyệt
-                                <Tag color="green" style={{ marginLeft: 8 }}>
-                                    {approvedProducts.length}
-                                </Tag>
-                            </span>
-                        }
-                        key="approved"
-                    >
-                        <Spin spinning={loading && activeTab === 'approved'}>
-                            <Table
-                                columns={columns}
-                                dataSource={approvedProducts}
-                                rowKey="id"
-                                pagination={{ pageSize: 10 }}
-                                className={styles['product-table']}
-                                style={{ marginTop: '16px' }}
-                            />
-                        </Spin>
-                    </TabPane>
-                    <TabPane
-                        tab={
-                            <span>
-                                <ClockCircleOutlined />
-                                Sản phẩm chờ duyệt
-                                <Tag color="orange" style={{ marginLeft: 8 }}>
-                                    {pendingProducts.length}
-                                </Tag>
-                            </span>
-                        }
-                        key="pending"
-                    >
-                        <Spin spinning={loading && activeTab === 'pending'}>
-                            <Table
-                                columns={columns}
-                                dataSource={pendingProducts}
-                                rowKey="id"
-                                pagination={{ pageSize: 10 }}
-                                className={styles['product-table']}
-                                style={{ marginTop: '16px' }}
-                            />
-                        </Spin>
-                    </TabPane>
-                </Tabs>
+                <StatusTabs
+                    tabs={statusTabs}
+                    activeKey={activeTab}
+                    onChange={setActiveTab}
+                />
             </div>
 
             <Modal
@@ -340,17 +322,17 @@ const ProductList: React.FC = () => {
             >
                 {selectedProduct && (
                     <Descriptions bordered column={1} size="small">
-                        <Descriptions.Item label="Image">
+                        <Descriptions.Item label="Hình ảnh">
                             <Image src={selectedProduct.url_image} alt="product" width={120} />
                         </Descriptions.Item>
-                        <Descriptions.Item label="Brand">{selectedProduct.brand}</Descriptions.Item>
-                        <Descriptions.Item label="Import Price">{Number(selectedProduct.import_price).toLocaleString()}₫</Descriptions.Item>
-                        <Descriptions.Item label="Retail Price">{Number(selectedProduct.retail_price).toLocaleString()}₫</Descriptions.Item>
-                        <Descriptions.Item label="Stock">{selectedProduct.stock}</Descriptions.Item>
-                        <Descriptions.Item label="Seller">{selectedProduct.seller_name}</Descriptions.Item>
-                        <Descriptions.Item label="Approval Status">{selectedProduct.approval_status}</Descriptions.Item>
-                        <Descriptions.Item label="Active Status">{selectedProduct.active_status}</Descriptions.Item>
-                        <Descriptions.Item label="Return Policy">
+                        <Descriptions.Item label="Thương hiệu">{selectedProduct.brand}</Descriptions.Item>
+                        <Descriptions.Item label="Giá nhập">{Number(selectedProduct.import_price).toLocaleString()}₫</Descriptions.Item>
+                        <Descriptions.Item label="Giá bán lẻ">{Number(selectedProduct.retail_price).toLocaleString()}₫</Descriptions.Item>
+                        <Descriptions.Item label="Tồn kho">{selectedProduct.stock}</Descriptions.Item>
+                        <Descriptions.Item label="Người bán">{selectedProduct.seller_name}</Descriptions.Item>
+                        <Descriptions.Item label="Trạng thái duyệt">{selectedProduct.approval_status === 'approved' ? 'Đã duyệt' : selectedProduct.approval_status === 'pending' ? 'Chờ duyệt' : 'Bị từ chối'}</Descriptions.Item>
+                        <Descriptions.Item label="Trạng thái hoạt động">{selectedProduct.active_status === 'active' ? 'Hoạt động' : 'Không hoạt động'}</Descriptions.Item>
+                        <Descriptions.Item label="Chính sách đổi trả">
                             {selectedProduct.return_policy && (
                                 <div>
                                     <div>Đổi trả: {selectedProduct.return_policy.is_returnable ? 'Có' : 'Không'}</div>
@@ -360,12 +342,12 @@ const ProductList: React.FC = () => {
                                 </div>
                             )}
                         </Descriptions.Item>
-                        <Descriptions.Item label="Product Details">{renderProductDetails(selectedProduct.product_details)}</Descriptions.Item>
-                        <Descriptions.Item label="Registration License">
+                        <Descriptions.Item label="Chi tiết sản phẩm">{renderProductDetails(selectedProduct.product_details)}</Descriptions.Item>
+                        <Descriptions.Item label="Giấy phép đăng ký">
                             <a href={selectedProduct.url_registration_license} target="_blank" rel="noopener noreferrer">Xem giấy phép</a>
                         </Descriptions.Item>
-                        <Descriptions.Item label="Created At">{selectedProduct.createdAt}</Descriptions.Item>
-                        <Descriptions.Item label="Updated At">{selectedProduct.updatedAt}</Descriptions.Item>
+                        <Descriptions.Item label="Ngày tạo">{selectedProduct.createdAt}</Descriptions.Item>
+                        <Descriptions.Item label="Ngày cập nhật">{selectedProduct.updatedAt}</Descriptions.Item>
                     </Descriptions>
                 )}
             </Modal>
@@ -408,7 +390,7 @@ const ProductList: React.FC = () => {
                                         <span style={{ fontSize: 12, color: '#888', marginLeft: 'auto' }}>{new Date(review.createdAt).toLocaleString()}</span>
                                     </div>
                                     <div style={{ margin: '8px 0', fontSize: 15 }}>{review.comment}</div>
-                                    <Button danger size="small" onClick={() => handleDeleteReview(review.id)}>
+                                    <Button danger size="small" style={{ float: 'right' }} onClick={() => handleDeleteReview(review.id)}>
                                         Xóa đánh giá
                                     </Button>
                                 </div>

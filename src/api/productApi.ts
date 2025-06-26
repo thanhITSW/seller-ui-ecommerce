@@ -3,7 +3,7 @@ import { HttpResponse } from '../types/http';
 import { ProductApi } from '../types/Product';
 import { ProductType } from '../types/ProductType';
 import { Category, Attribute } from '../types/ProductType';
-import { ProductReview } from '../types/Product';
+import { ProductReview, ResponseReview } from '../types/Product';
 
 function getStoreId() {
     const storeId = localStorage.getItem('store_id');
@@ -67,6 +67,32 @@ const productApi = {
     getCatalogProducts: (): Promise<HttpResponse<{ code: number; message: string; total: number; data: any[] }>> => {
         const url = '/product/catalog-products';
         return handleRequest(axiosClient.get(url));
+    },
+    getReviewStats: (params: { rating?: number[] | number; search?: string; from_date?: string; to_date?: string; seller_id?: string }): Promise<HttpResponse<{
+        code: number;
+        message: string;
+        stats: {
+            totalReviews: number;
+            goodReviewRatio: number;
+            reviewRate: number;
+            badReviewsNoResponse: number;
+            todayReviews: number;
+            starCount: { [key: number]: number };
+        };
+        data: {
+            reviewsWithResponse: ProductReview[];
+            reviewsWithoutResponse: ProductReview[];
+        };
+    }>> => {
+        const url = '/product/reviews/stats';
+        return handleRequest(axiosClient.get(url, { params }));
+    },
+    responseReview: (
+        review_id: string,
+        formData: FormData
+    ): Promise<HttpResponse<{ code: number; message: string; data: ResponseReview }>> => {
+        const url = `/product/reviews/response/${review_id}`;
+        return handleRequest(axiosClient.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } }));
     },
 };
 

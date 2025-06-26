@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { Modal, Form, Input, Select, DatePicker, InputNumber, Switch } from 'antd';
+import { Modal, Form, Input, Select, DatePicker, InputNumber, Switch, notification } from 'antd';
 import { Voucher, VoucherFormData } from '../../types/Voucher';
 import dayjs from 'dayjs';
 import { formatCurrency } from '../../utils/format';
@@ -49,6 +49,8 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
                 max_discount_value: values.max_discount_value ? values.max_discount_value.toString() : null
             };
             onSubmit(formattedValues);
+        }).catch(info => {
+            notification.error({ message: 'Vui lòng điền đầy đủ và chính xác thông tin!', description: info.errorFields[0]?.errors[0] || '' });
         });
     };
 
@@ -77,7 +79,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
 
     return (
         <Modal
-            title={isEditing ? 'Edit Voucher' : 'Create New Voucher'}
+            title={isEditing ? 'Sửa mã giảm giá' : 'Tạo mã giảm giá mới'}
             open={visible}
             onCancel={onCancel}
             onOk={handleSubmit}
@@ -96,32 +98,32 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
                 {!isEditing && (
                     <Form.Item
                         name="type"
-                        label="Type"
-                        rules={[{ required: true, message: 'Please select type!' }]}
+                        label="Loại"
+                        rules={[{ required: true, message: 'Vui lòng chọn loại!' }]}
                     >
                         <Select disabled={isUsed}>
-                            <Select.Option value="order">Order Discount</Select.Option>
-                            <Select.Option value="shipping">Free Shipping</Select.Option>
+                            <Select.Option value="order">Giảm giá đơn hàng</Select.Option>
+                            <Select.Option value="shipping">Miễn phí vận chuyển</Select.Option>
                         </Select>
                     </Form.Item>
                 )}
 
                 <Form.Item
                     name="description"
-                    label="Description"
-                    rules={[{ required: true, message: 'Please input description!' }]}
+                    label="Mô tả"
+                    rules={[{ required: true, message: 'Vui lòng nhập mô tả!' }]}
                 >
-                    <Input.TextArea rows={3} placeholder="Enter description" disabled={isUsed} />
+                    <Input.TextArea rows={3} placeholder="Nhập mô tả" disabled={isUsed} />
                 </Form.Item>
 
                 <Form.Item
                     name="discount_unit"
-                    label="Discount Unit"
-                    rules={[{ required: true, message: 'Please select discount unit!' }]}
+                    label="Đơn vị giảm giá"
+                    rules={[{ required: true, message: 'Vui lòng chọn đơn vị giảm giá!' }]}
                 >
                     <Select disabled={isUsed}>
-                        <Select.Option value="percent">Percentage (%)</Select.Option>
-                        <Select.Option value="amount">Fixed Amount (VND)</Select.Option>
+                        <Select.Option value="percent">Phần trăm (%)</Select.Option>
+                        <Select.Option value="amount">Số tiền cố định (VND)</Select.Option>
                     </Select>
                 </Form.Item>
 
@@ -136,16 +138,16 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
                         return (
                             <Form.Item
                                 name="discount_value"
-                                label="Discount Value"
+                                label="Giá trị giảm giá"
                                 rules={[
-                                    { required: true, message: 'Please input discount value!' },
+                                    { required: true, message: 'Vui lòng nhập giá trị giảm giá!' },
                                     {
                                         validator: async (_, value) => {
                                             if (value === undefined || value === null || value < 0) {
-                                                throw new Error('Value must be greater than or equal to 0!');
+                                                throw new Error('Giá trị phải lớn hơn hoặc bằng 0!');
                                             }
                                             if (discountUnit === 'percent' && value > 100) {
-                                                throw new Error('Percentage must be less than or equal to 100!');
+                                                throw new Error('Phần trăm phải nhỏ hơn hoặc bằng 100!');
                                             }
                                         }
                                     }
@@ -153,7 +155,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
                             >
                                 <InputNumber
                                     style={{ width: '100%' }}
-                                    placeholder={`Enter discount value (${discountUnit === 'percent' ? '%' : 'VND'})`}
+                                    placeholder={`Nhập giá trị giảm giá (${discountUnit === 'percent' ? '%' : 'VND'})`}
                                     formatter={discountUnit === 'amount' ? (value) => formatCurrency(Number(value) || 0) : undefined}
                                     parser={discountUnit === 'amount' ? numberParser : undefined}
                                     min={0}
@@ -167,12 +169,12 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
 
                 <Form.Item
                     name="max_discount_value"
-                    label="Maximum Discount Value (VND)"
+                    label="Giá trị giảm tối đa (VND)"
                     rules={[
                         {
                             validator: async (_, value) => {
                                 if (value !== undefined && value !== null && value < 0) {
-                                    throw new Error('Value must be greater than or equal to 0!');
+                                    throw new Error('Giá trị phải lớn hơn hoặc bằng 0!');
                                 }
                             }
                         }
@@ -180,7 +182,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
                 >
                     <InputNumber
                         style={{ width: '100%' }}
-                        placeholder="Enter maximum discount value"
+                        placeholder="Nhập giá trị giảm tối đa"
                         formatter={(value) => formatCurrency(Number(value) || 0)}
                         parser={numberParser}
                         min={0}
@@ -191,13 +193,13 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
 
                 <Form.Item
                     name="min_order_value"
-                    label="Minimum Order Value (VND)"
+                    label="Giá trị đơn hàng tối thiểu (VND)"
                     rules={[
-                        { required: true, message: 'Please input minimum order value!' },
+                        { required: true, message: 'Vui lòng nhập giá trị đơn hàng tối thiểu!' },
                         {
                             validator: async (_, value) => {
                                 if (value === undefined || value === null || value < 0) {
-                                    throw new Error('Value must be greater than or equal to 0!');
+                                    throw new Error('Giá trị phải lớn hơn hoặc bằng 0!');
                                 }
                             }
                         }
@@ -205,7 +207,7 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
                 >
                     <InputNumber
                         style={{ width: '100%' }}
-                        placeholder="Enter minimum order value"
+                        placeholder="Nhập giá trị đơn hàng tối thiểu"
                         formatter={(value) => formatCurrency(Number(value) || 0)}
                         parser={numberParser}
                         min={0}
@@ -216,8 +218,8 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
 
                 <Form.Item
                     name="start_date"
-                    label="Start Date"
-                    rules={[{ required: true, message: 'Please select start date!' }]}
+                    label="Ngày bắt đầu"
+                    rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
                 >
                     <DatePicker
                         style={{ width: '100%' }}
@@ -228,15 +230,15 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
 
                 <Form.Item
                     name="end_date"
-                    label="End Date"
+                    label="Ngày kết thúc"
                     rules={[
-                        { required: true, message: 'Please select end date!' },
+                        { required: true, message: 'Vui lòng chọn ngày kết thúc!' },
                         ({ getFieldValue }) => ({
                             validator(_, value) {
                                 if (!value || !getFieldValue('start_date') || value.isAfter(getFieldValue('start_date'))) {
                                     return Promise.resolve();
                                 }
-                                return Promise.reject(new Error('End date must be after start date!'));
+                                return Promise.reject(new Error('Ngày kết thúc phải sau ngày bắt đầu!'));
                             },
                         }),
                     ]}
@@ -250,10 +252,10 @@ const VoucherForm: React.FC<VoucherFormProps> = ({
 
                 <Form.Item
                     name="is_active"
-                    label="Status"
+                    label="Trạng thái"
                     valuePropName="checked"
                 >
-                    <Switch checkedChildren="Active" unCheckedChildren="Inactive" />
+                    <Switch checkedChildren="Hoạt động" unCheckedChildren="Không hoạt động" />
                 </Form.Item>
             </Form>
         </Modal>

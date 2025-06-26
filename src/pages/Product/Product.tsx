@@ -16,7 +16,6 @@ const Product: React.FC = () => {
             <div className={styles['page-header']}>
                 <h1>Quản lý sản phẩm</h1>
             </div>
-
             <ProductList />
         </div>
     );

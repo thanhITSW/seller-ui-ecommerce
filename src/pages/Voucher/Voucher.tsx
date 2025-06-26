@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Table, Button, Space, message, Popconfirm, Typography, Tag, Switch, Tooltip } from 'antd';
+import { Table, Button, Space, message, Popconfirm, Typography, Tag, Switch, Tooltip, notification } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import type { ColumnsType } from 'antd/es/table';
 import { Voucher } from '../../types/Voucher';
@@ -34,10 +34,10 @@ const VoucherPage: React.FC = () => {
                 }));
                 setVouchers(vouchersWithUsage);
             } else {
-                message.error('Failed to fetch vouchers');
+                notification.error({ message: 'Lấy danh sách mã giảm giá thất bại!' });
             }
         } catch (error) {
-            message.error('Failed to fetch vouchers');
+            notification.error({ message: 'Lấy danh sách mã giảm giá thất bại!' });
         } finally {
             setLoading(false);
         }
@@ -65,14 +65,14 @@ const VoucherPage: React.FC = () => {
                 : await voucherApi.createVoucher(values);
 
             if (response.ok && response.body?.code === 0) {
-                message.success(`Voucher ${editVoucher ? 'updated' : 'created'} successfully`);
+                notification.success({ message: `Mã giảm giá ${editVoucher ? 'cập nhật' : 'tạo mới'} thành công!` });
                 setFormVisible(false);
                 fetchVouchers();
             } else {
-                message.error(response.body?.message || `Failed to ${editVoucher ? 'update' : 'create'} voucher`);
+                notification.error({ message: response.body?.message || `Thao tác ${editVoucher ? 'cập nhật' : 'tạo mới'} mã giảm giá thất bại!` });
             }
         } catch (error: any) {
-            message.error(error.response?.data?.message || `Failed to ${editVoucher ? 'update' : 'create'} voucher`);
+            notification.error({ message: error.response?.data?.message || `Thao tác ${editVoucher ? 'cập nhật' : 'tạo mới'} mã giảm giá thất bại!` });
         } finally {
             setFormLoading(false);
         }
@@ -83,13 +83,13 @@ const VoucherPage: React.FC = () => {
         try {
             const response = await voucherApi.deleteVoucher(id);
             if (response.ok && response.body?.code === 0) {
-                message.success('Voucher deleted successfully');
+                notification.success({ message: 'Xóa mã giảm giá thành công!' });
                 fetchVouchers();
             } else {
-                message.error(response.body?.message || 'Failed to delete voucher');
+                notification.error({ message: response.body?.message || 'Xóa mã giảm giá thất bại!' });
             }
         } catch (error) {
-            message.error('Failed to delete voucher');
+            notification.error({ message: 'Xóa mã giảm giá thất bại!' });
         } finally {
             setLoading(false);
         }
@@ -102,13 +102,13 @@ const VoucherPage: React.FC = () => {
                 is_active: !voucher.is_active
             });
             if (response.ok && response.body?.code === 0) {
-                message.success('Voucher status updated successfully');
+                notification.success({ message: 'Cập nhật trạng thái mã giảm giá thành công!' });
                 fetchVouchers();
             } else {
-                message.error(response.body?.message || 'Failed to update voucher status');
+                notification.error({ message: response.body?.message || 'Cập nhật trạng thái mã giảm giá thất bại!' });
             }
         } catch (error) {
-            message.error('Failed to update voucher status');
+            notification.error({ message: 'Cập nhật trạng thái mã giảm giá thất bại!' });
         } finally {
             setLoading(false);
         }
@@ -117,15 +117,15 @@ const VoucherPage: React.FC = () => {
     const getResponsiveColumns = (): ColumnsType<Voucher> => {
         const baseColumns: ColumnsType<Voucher> = [
             {
-                title: 'Code',
+                title: 'Mã',
                 dataIndex: 'code',
                 key: 'code',
                 render: (code: string, record) => (
                     <Tooltip title={
                         <div>
-                            <p><strong>Description:</strong> {record.description}</p>
-                            <p><strong>Valid Period:</strong><br />
-                                {dayjs(record.start_date).format('YYYY-MM-DD')} to {dayjs(record.end_date).format('YYYY-MM-DD')}</p>
+                            <p><strong>Mô tả:</strong> {record.description}</p>
+                            <p><strong>Thời gian hiệu lực:</strong><br />
+                                {dayjs(record.start_date).format('YYYY-MM-DD')} đến {dayjs(record.end_date).format('YYYY-MM-DD')}</p>
                         </div>
                     }>
                         <Tag color="blue" style={{ cursor: 'pointer' }}>{code} <InfoCircleOutlined /></Tag>
@@ -133,17 +133,17 @@ const VoucherPage: React.FC = () => {
                 ),
             },
             {
-                title: 'Type',
+                title: 'Loại',
                 dataIndex: 'type',
                 key: 'type',
                 render: (type: string) => (
                     <Tag color={type === 'order' ? 'green' : 'gold'}>
-                        {type === 'order' ? 'Order' : 'Ship'}
+                        {type === 'order' ? 'Đơn hàng' : 'Vận chuyển'}
                     </Tag>
                 ),
             },
             {
-                title: 'Discount',
+                title: 'Giảm giá',
                 key: 'discount',
                 render: (_, record) => (
                     <span>
@@ -151,7 +151,7 @@ const VoucherPage: React.FC = () => {
                             ? `${parseFloat(record.discount_value).toFixed(0)}%`
                             : formatCurrency(parseFloat(record.discount_value))}
                         {record.max_discount_value && (
-                            <Tooltip title={`Max: ${formatCurrency(parseFloat(record.max_discount_value))}`}>
+                            <Tooltip title={`Tối đa: ${formatCurrency(parseFloat(record.max_discount_value))}`}>
                                 <InfoCircleOutlined style={{ marginLeft: 4 }} />
                             </Tooltip>
                         )}
@@ -159,20 +159,20 @@ const VoucherPage: React.FC = () => {
                 ),
             },
             {
-                title: 'Status',
+                title: 'Trạng thái',
                 key: 'status',
                 render: (_, record) => (
                     <Switch
                         checked={record.is_active}
                         onChange={() => handleStatusToggle(record)}
-                        checkedChildren="On"
-                        unCheckedChildren="Off"
+                        checkedChildren="Bật"
+                        unCheckedChildren="Tắt"
                         size={isMobile ? 'small' : 'default'}
                     />
                 ),
             },
             {
-                title: 'Actions',
+                title: 'Hành động',
                 key: 'actions',
                 align: 'right',
                 render: (_, record) => (
@@ -183,20 +183,20 @@ const VoucherPage: React.FC = () => {
                             onClick={() => handleEdit(record)}
                             size={isMobile ? 'small' : 'middle'}
                         >
-                            {!isMobile && 'Edit'}
+                            {/* {!isMobile && 'Sửa'} */}
                         </Button>
                         <Popconfirm
-                            title="Are you sure you want to delete this voucher?"
+                            title="Bạn có chắc chắn muốn xóa mã giảm giá này?"
                             onConfirm={() => handleDelete(record.id)}
-                            okText="Delete"
-                            cancelText="Cancel"
+                            okText="Xóa"
+                            cancelText="Hủy"
                         >
                             <Button
                                 danger
                                 icon={<DeleteOutlined />}
                                 size={isMobile ? 'small' : 'middle'}
                             >
-                                {!isMobile && 'Delete'}
+                                {/* {!isMobile && 'Xóa'} */}
                             </Button>
                         </Popconfirm>
                     </Space>
@@ -205,22 +205,21 @@ const VoucherPage: React.FC = () => {
         ];
 
         if (!isTabletOrMobile) {
-            // Add these columns only for desktop view
             baseColumns.splice(2, 0,
                 {
-                    title: 'Min Order',
+                    title: 'Đơn hàng tối thiểu',
                     dataIndex: 'min_order_value',
                     key: 'min_order_value',
                     render: (value: string) => formatCurrency(parseFloat(value)),
                 },
                 {
-                    title: 'Valid Period',
+                    title: 'Thời gian hiệu lực',
                     key: 'period',
                     render: (_, record) => (
                         <span>
                             {dayjs(record.start_date).format('YYYY-MM-DD')}
                             <br />
-                            to
+                            đến
                             <br />
                             {dayjs(record.end_date).format('YYYY-MM-DD')}
                         </span>
@@ -235,13 +234,13 @@ const VoucherPage: React.FC = () => {
     return (
         <div className="voucher-page">
             <div className="header">
-                <Title level={2}>Voucher Management</Title>
+                <Title level={2}>Quản lý mã giảm giá</Title>
                 <Button
                     type="primary"
                     icon={<PlusOutlined />}
                     onClick={handleCreate}
                 >
-                    Create New Voucher
+                    Tạo mã giảm giá mới
                 </Button>
             </div>
 
@@ -253,7 +252,7 @@ const VoucherPage: React.FC = () => {
                 pagination={{
                     pageSize: 10,
                     showSizeChanger: true,
-                    showTotal: (total) => `Total ${total} vouchers`,
+                    showTotal: (total) => `Tổng ${total} mã giảm giá`,
                 }}
                 scroll={{ x: 'max-content' }}
             />

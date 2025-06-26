@@ -27,6 +27,10 @@ import {
   ShoppingOutlined,
   MoneyCollectOutlined,
   ContainerOutlined,
+  CommentOutlined,
+  ShopOutlined,
+  CarOutlined,
+  ShoppingCartOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import ukicon from "../../assets/uk-icon.svg";
@@ -178,7 +182,7 @@ const MainPageLayout: React.FC = () => {
             <div className="user-profile">
               <Avatar className="user-avatar">{localStore.avatar}</Avatar>
               <div className="user-info">
-                <div className="user-name">{user.fullname}</div>
+                <div className="user-name">{localStore.name}</div>
                 <div className="user-role">{user.role}</div>
               </div>
             </div>
@@ -206,26 +210,31 @@ const MainPageLayout: React.FC = () => {
           <div className="sidebar-section">
             <div className="sidebar-section-title">PAGES</div>
             <Menu mode="inline" defaultSelectedKeys={["errorPage"]}>
-              <Menu.Item key="storeManagement" icon={<ShoppingOutlined />}>
+              <Menu.Item key="storeManagement" icon={<ShopOutlined />}>
                 <Link to="/stores">Store Settings</Link>
               </Menu.Item>
 
               {currentStoreStatus === 'active' && (
                 <>
-                  <Menu.SubMenu key="product" icon={<ShoppingOutlined />} title="Product">
-                    <Menu.Item key="productManagement"><Link to="/products">Product Management</Link></Menu.Item>
-                    <Menu.Item key="productBrand"><Link to="/products/brand">Brand</Link></Menu.Item>
+                  <Menu.SubMenu key="product" icon={<ShoppingOutlined />} title="Quản lí sản phẩm">
+                    <Menu.Item key="productManagement"><Link to="/products">Tất cả sản phẩm</Link></Menu.Item>
+                    <Menu.Item key="suggestionProduct"><Link to="/products/suggestion">Đề xuất sản phẩm mới</Link></Menu.Item>
                   </Menu.SubMenu>
-                  <Menu.Item key="voucherManagement" icon={<GiftOutlined />}>
-                    <Link to="/vouchers">Voucher Management</Link>
-                  </Menu.Item>
-                  <Menu.SubMenu key="payment" icon={<ContainerOutlined />} title="Payment">
-                    <Menu.Item key="paymentManagement"><Link to="/payments">Payment Management</Link></Menu.Item>
-                    <Menu.Item key="withdraw"><Link to="/withdraw-requests">Withdraw Request</Link></Menu.Item>
+                  <Menu.SubMenu key="vouchers" icon={<ShoppingCartOutlined />} title="Kênh marketing">
+                    <Menu.Item key="promotionManagement"><Link to="/promotions">Quản lí chương trình khuyến mãi</Link></Menu.Item>
+                    <Menu.Item key="productPromotionManager"><Link to="/promotions/product">Quản lí sản phẩm trong chương trình khuyến mãi</Link></Menu.Item>
+                    <Menu.Item key="voucherManagement"><Link to="/vouchers">Quản lí mã giảm giá</Link></Menu.Item>
                   </Menu.SubMenu>
-                  <Menu.SubMenu key="order" icon={<ContainerOutlined />} title="Order">
-                    <Menu.Item key="orderManagement"><Link to="/orders">Order Management</Link></Menu.Item>
-                    <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Request Order Return</Link></Menu.Item>
+                  <Menu.SubMenu key="customer" icon={<CommentOutlined />} title="Chăm sóc khách hàng">
+                    <Menu.Item key="customerReview"><Link to="/customers/reviews">Quản lí đánh giá</Link></Menu.Item>
+                  </Menu.SubMenu>
+                  <Menu.SubMenu key="payment" icon={<MoneyCollectOutlined />} title="Thanh toán">
+                    <Menu.Item key="paymentManagement"><Link to="/payments">Quản lí thanh toán</Link></Menu.Item>
+                    <Menu.Item key="withdraw"><Link to="/withdraw-requests">Quản lí rút tiền</Link></Menu.Item>
+                  </Menu.SubMenu>
+                  <Menu.SubMenu key="order" icon={<CarOutlined />} title="Đơn hàng">
+                    <Menu.Item key="orderManagement"><Link to="/orders">Quản lí đơn hàng</Link></Menu.Item>
+                    <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Yêu cầu trả hàng</Link></Menu.Item>
                   </Menu.SubMenu>
                   <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
                     Under Maintenance
