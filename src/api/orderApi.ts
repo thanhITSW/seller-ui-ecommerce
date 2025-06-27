@@ -29,6 +29,10 @@ const orderApi = {
         const url = `/order/orders/${id}`;
         return handleRequest(axiosClient.delete(url));
     },
+    getDetailedOrders: (params?: any): Promise<HttpResponse<any>> => {
+        const url = `/order/orders/get-details-order?seller_id=${getStoreId()}`;
+        return handleRequest(axiosClient.get(url, { params }));
+    },
 };
 
 export default orderApi; 

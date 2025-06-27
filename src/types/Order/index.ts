@@ -25,4 +25,43 @@ export interface OrderListResponse {
     code: number;
     message: string;
     data: Order[];
+}
+
+export interface User {
+    email: string;
+    fullname: string;
+    phone: string;
+    avatar: string;
+}
+
+export interface ShipmentProgress {
+    location: string;
+    status: string;
+    note: string;
+    timestamp: string;
+}
+
+export interface Shipment {
+    id: string;
+    order_id: string;
+    tracking_number: string;
+    shipping_provider_id: string;
+    shipping_address_from_id: string;
+    shipping_address_to_id: string;
+    current_status: string;
+    progress: ShipmentProgress[];
+    createdAt: string;
+    updatedAt: string;
+}
+
+export interface OrderDetail extends Order {
+    shipment?: Shipment;
+    user?: User;
+}
+
+export interface DetailedOrderListResponse {
+    code: number;
+    message: string;
+    data: OrderDetail[];
+    statusCount?: Record<string, number>;
 } 

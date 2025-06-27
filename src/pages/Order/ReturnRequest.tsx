@@ -100,7 +100,7 @@ const ReturnRequestPage: React.FC = () => {
                 status: actionType,
                 response_message: values.response_message,
             });
-            if (res.ok && res.body.code === 0) {
+            if (res.ok && res.body && res.body.code === 0) {
                 message.success('Phản hồi yêu cầu hoàn trả thành công');
                 setActionModalVisible(false);
                 fetchRequests();

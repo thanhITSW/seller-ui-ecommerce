@@ -201,7 +201,7 @@ const MainPageLayout: React.FC = () => {
             <Menu mode="inline" defaultSelectedKeys={["errorPage"]}>
               {currentStoreStatus === 'active' && (
                 <Menu.Item key="dashboards" icon={<DashboardOutlined />}>
-                  Dashboards
+                  <Link to="/">Trang chủ</Link>
                 </Menu.Item>
               )}
             </Menu>
@@ -211,7 +211,7 @@ const MainPageLayout: React.FC = () => {
             <div className="sidebar-section-title">PAGES</div>
             <Menu mode="inline" defaultSelectedKeys={["errorPage"]}>
               <Menu.Item key="storeManagement" icon={<ShopOutlined />}>
-                <Link to="/stores">Store Settings</Link>
+                <Link to="/stores">Cài đặt cửa hàng</Link>
               </Menu.Item>
 
               {currentStoreStatus === 'active' && (
@@ -226,7 +226,7 @@ const MainPageLayout: React.FC = () => {
                     <Menu.Item key="voucherManagement"><Link to="/vouchers">Quản lí mã giảm giá</Link></Menu.Item>
                   </Menu.SubMenu>
                   <Menu.SubMenu key="customer" icon={<CommentOutlined />} title="Chăm sóc khách hàng">
-                    <Menu.Item key="customerReview"><Link to="/customers/reviews">Quản lí đánh giá</Link></Menu.Item>
+                    <Menu.Item key="customerReview"><Link to="/products/reviews">Quản lí đánh giá</Link></Menu.Item>
                   </Menu.SubMenu>
                   <Menu.SubMenu key="payment" icon={<MoneyCollectOutlined />} title="Thanh toán">
                     <Menu.Item key="paymentManagement"><Link to="/payments">Quản lí thanh toán</Link></Menu.Item>
@@ -236,21 +236,21 @@ const MainPageLayout: React.FC = () => {
                     <Menu.Item key="orderManagement"><Link to="/orders">Quản lí đơn hàng</Link></Menu.Item>
                     <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Yêu cầu trả hàng</Link></Menu.Item>
                   </Menu.SubMenu>
-                  <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
+                  {/* <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
                     Under Maintenance
-                  </Menu.Item>
+                  </Menu.Item> */}
                   <Menu.Item key="userProfile" icon={<UserOutlined />}>
-                    User Profile
+                    Thông tin tài khoản
                   </Menu.Item>
                   <Menu.Item key="notifications" icon={<BellOutlined />}>
-                    Notifications
+                    Thông báo
                   </Menu.Item>
-                  <Menu.Item key="contacts" icon={<ContactsOutlined />}>
+                  {/* <Menu.Item key="contacts" icon={<ContactsOutlined />}>
                     Contacts
                   </Menu.Item>
                   <Menu.Item key="faq" icon={<QuestionCircleOutlined />}>
                     Faq
-                  </Menu.Item>
+                  </Menu.Item> */}
                   <Menu.Item key="accountSettings" icon={<SettingOutlined />}>
                     Account settings
                   </Menu.Item>
@@ -259,9 +259,9 @@ const MainPageLayout: React.FC = () => {
             </Menu>
           </div>
 
-          <div className="sidebar-footer">
+          {/* <div className="sidebar-footer">
             <Button type="text" icon={<MenuFoldOutlined />} />
-          </div>
+          </div> */}
         </Sider>
         <Content className="app-content">
           <Outlet />
