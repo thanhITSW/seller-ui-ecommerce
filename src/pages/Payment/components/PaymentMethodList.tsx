@@ -7,11 +7,10 @@ import styles from '../styles/Payment.module.scss';
 
 interface PaymentMethodListProps {
     loading: boolean;
-    onAdd: () => void;
     onEdit: (method: PaymentMethod) => void;
 }
 
-const PaymentMethodList = forwardRef<any, PaymentMethodListProps>(({ loading, onAdd, onEdit }, ref) => {
+const PaymentMethodList = forwardRef<any, PaymentMethodListProps>(({ loading, onEdit }, ref) => {
     const [data, setData] = useState<PaymentMethod[]>([]);
     const [tableLoading, setTableLoading] = useState(false);
 

@@ -7,11 +7,10 @@ import styles from '../styles/Shipment.module.scss';
 
 interface ShippingProviderListProps {
     loading: boolean;
-    onAdd: () => void;
     onEdit: (provider: ShippingProvider) => void;
 }
 
-const ShippingProviderList = forwardRef<any, ShippingProviderListProps>(({ loading, onAdd, onEdit }, ref) => {
+const ShippingProviderList = forwardRef<any, ShippingProviderListProps>(({ loading, onEdit }, ref) => {
     const [data, setData] = useState<ShippingProvider[]>([]);
     const [tableLoading, setTableLoading] = useState(false);
 

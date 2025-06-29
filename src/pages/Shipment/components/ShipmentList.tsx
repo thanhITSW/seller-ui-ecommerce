@@ -29,7 +29,7 @@ const ShipmentList: React.FC<ShipmentListProps> = ({ loading }) => {
             if (res.ok && res.body?.code === 0) {
                 setData(res.body.data || []);
             } else {
-                message.error('Lỗi khi lấy danh sách đơn hàng vận chuyển');
+                message.error(res.body?.message || 'Lỗi khi lấy danh sách đơn hàng vận chuyển');
             }
         } catch (e) {
             message.error('Lỗi khi lấy danh sách đơn hàng vận chuyển');

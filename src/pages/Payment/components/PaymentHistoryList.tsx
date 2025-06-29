@@ -58,7 +58,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ loading }) => {
         fetchData(pagination.current, pagination.pageSize);
     };
 
-    const handleFilterChange = (dates: any, dateStrings: [string, string]) => {
+    const handleFilterChange = (dates: any) => {
         if (dates && dates[0] && dates[1]) {
             setFilter(f => ({ ...f, startDate: dates[0].format('YYYY-MM-DD'), endDate: dates[1].format('YYYY-MM-DD') }));
         } else {
