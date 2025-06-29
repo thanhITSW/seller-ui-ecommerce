@@ -4,6 +4,7 @@ import { ProductApi } from '../types/Product';
 import { ProductType } from '../types/ProductType';
 import { Category, Attribute } from '../types/ProductType';
 import { ProductReview, ResponseReview } from '../types/Product';
+import { ProductStatistics } from '../types/Product';
 
 function getStoreId() {
     const storeId = localStorage.getItem('store_id');
@@ -93,6 +94,17 @@ const productApi = {
     ): Promise<HttpResponse<{ code: number; message: string; data: ResponseReview }>> => {
         const url = `/product/reviews/response/${review_id}`;
         return handleRequest(axiosClient.post(url, formData, { headers: { 'Content-Type': 'multipart/form-data' } }));
+    },
+    getProductStatistics: (params?: { startDate?: string; endDate?: string; seller_id?: string }): Promise<HttpResponse<{ code: number; message: string; data: ProductStatistics[] }>> => {
+        let url = `/product/reports/products?seller_id=${getStoreId()}`;
+        if (params) {
+            const query = Object.entries(params)
+                .filter(([_, v]) => v)
+                .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v as string)}`)
+                .join('&');
+            if (query) url += `?${query}`;
+        }
+        return handleRequest(axiosClient.get(url));
     },
 };
 

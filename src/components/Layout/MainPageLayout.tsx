@@ -219,6 +219,7 @@ const MainPageLayout: React.FC = () => {
                   <Menu.SubMenu key="product" icon={<ShoppingOutlined />} title="Quản lí sản phẩm">
                     <Menu.Item key="productManagement"><Link to="/products">Tất cả sản phẩm</Link></Menu.Item>
                     <Menu.Item key="suggestionProduct"><Link to="/products/suggestion">Đề xuất sản phẩm mới</Link></Menu.Item>
+                    <Menu.Item key="productStatistics"><Link to="/products/statistics">Thống kê sản phẩm đã bán</Link></Menu.Item>
                   </Menu.SubMenu>
                   <Menu.SubMenu key="vouchers" icon={<ShoppingCartOutlined />} title="Kênh marketing">
                     <Menu.Item key="promotionManagement"><Link to="/promotions">Quản lí chương trình khuyến mãi</Link></Menu.Item>
@@ -235,6 +236,7 @@ const MainPageLayout: React.FC = () => {
                   <Menu.SubMenu key="order" icon={<CarOutlined />} title="Đơn hàng">
                     <Menu.Item key="orderManagement"><Link to="/orders">Quản lí đơn hàng</Link></Menu.Item>
                     <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Yêu cầu trả hàng</Link></Menu.Item>
+                    <Menu.Item key="orderStatistics"><Link to="/orders/statistics">Thống kê đơn hàng</Link></Menu.Item>
                   </Menu.SubMenu>
                   {/* <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
                     Under Maintenance

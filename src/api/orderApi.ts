@@ -1,5 +1,5 @@
 import axiosClient, { handleRequest } from './axiosClient';
-import { Order, OrderListResponse } from '../types/Order';
+import { Order, OrderListResponse, OrderStatistics } from '../types/Order';
 import { HttpResponse } from '../types/http';
 
 function getStoreId() {
@@ -32,6 +32,17 @@ const orderApi = {
     getDetailedOrders: (params?: any): Promise<HttpResponse<any>> => {
         const url = `/order/orders/get-details-order?seller_id=${getStoreId()}`;
         return handleRequest(axiosClient.get(url, { params }));
+    },
+    getOrderStatistics: (params?: { startDate?: string; endDate?: string }): Promise<HttpResponse<{ code: number; message: string; data: OrderStatistics }>> => {
+        let url = `/order/reports?seller_id=${getStoreId()}`;
+        if (params) {
+            const query = Object.entries(params)
+                .filter(([_, v]) => v)
+                .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v as string)}`)
+                .join('&');
+            if (query) url += `?${query}`;
+        }
+        return handleRequest(axiosClient.get(url));
     },
 };
 

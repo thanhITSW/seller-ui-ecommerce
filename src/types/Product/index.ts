@@ -103,3 +103,16 @@ export interface ResponseReview {
     createdAt: string;
     updatedAt: string;
 }
+
+export interface ProductStatistics {
+    product_id: string;
+    name: string;
+    url_image: string;
+    import_price: string;
+    retail_price: string;
+    quantity_sold: number;
+    cost: number;
+    revenue: number;
+    profit: number;
+    profit_margin: string;
+} 

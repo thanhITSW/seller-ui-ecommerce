@@ -17,6 +17,8 @@ import ProductPromotionManager from './pages/Promotion/ProductPromotionManager';
 import { OrderPage, ReturnRequestPage } from './pages/Order';
 import WithdrawRequestPage from './pages/WithdrawRequest';
 import ProductReviewManager from './pages/Product/ProductReviewManager';
+import ProductStatistics from './pages/Product/ProductStatistics';
+import OrderStatistics from './pages/Order/OrderStatistics';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
@@ -84,6 +86,7 @@ function App() {
             <Route path="products/suggestion" element={<SuggestionProductPage />} />
             <Route path="products/type" element={<ProductTypePage />} />
             <Route path="products/reviews" element={<ProductReviewManager />} />
+            <Route path="products/statistics" element={<ProductStatistics />} />
             <Route path="customers" element={<UserPage />} />
             <Route path="promotions" element={<PromotionPage />} />
             <Route path="promotions/product" element={<ProductPromotionManager />} />
@@ -91,6 +94,7 @@ function App() {
             <Route path="payments" element={<PaymentPage />} />
             <Route path="shipments" element={<ShipmentPage />} />
             <Route path="orders" element={<OrderPage />} />
+            <Route path="orders/statistics" element={<OrderStatistics />} />
             <Route path="orders/return-requests" element={<ReturnRequestPage />} />
             <Route path="withdraw-requests" element={<WithdrawRequestPage />} />
           </Route>

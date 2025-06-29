@@ -64,4 +64,13 @@ export interface DetailedOrderListResponse {
     message: string;
     data: OrderDetail[];
     statusCount?: Record<string, number>;
+}
+
+export interface OrderStatistics {
+    totalOrders: number;
+    totalProductsSold: number;
+    totalRevenue: number;
+    totalRefund: number;
+    totalProductsRefunded: number;
+    profit: number;
 } 
