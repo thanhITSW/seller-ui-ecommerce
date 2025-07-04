@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, Space, Popconfirm, Tag } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { Attribute } from '../../../../types/ProductType';
+import { Attribute } from '../../../types/ProductType';
 import './styles.scss';
 
 interface AttributeListProps {

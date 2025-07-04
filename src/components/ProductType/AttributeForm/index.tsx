@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Form, Input } from 'antd';
-import { Attribute } from '../../../../types/ProductType';
+import { Attribute } from '../../../types/ProductType';
 import './styles.scss';
 
 interface AttributeFormProps {

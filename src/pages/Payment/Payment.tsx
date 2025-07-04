@@ -15,7 +15,7 @@ const PaymentPage: React.FC = () => {
     const [historyFilterVisible, setHistoryFilterVisible] = useState(false);
     const [methodFormVisible, setMethodFormVisible] = useState(false);
     const [editingMethod, setEditingMethod] = useState<PaymentMethod | null>(null);
-    const methodListRef = useRef<any>();
+    const methodListRef = useRef<any>(null);
 
     const handleAdd = () => {
         setEditingMethod(null);
@@ -34,7 +34,11 @@ const PaymentPage: React.FC = () => {
             if (editingMethod) {
                 res = await paymentApi.updatePaymentMethod(editingMethod.id, values);
             } else {
-                res = await paymentApi.createPaymentMethod(values);
+                res = await paymentApi.createPaymentMethod({
+                    method_name: values.method_name || '',
+                    description: values.description || '',
+                    is_active: values.is_active !== undefined ? values.is_active : true
+                });
             }
             if (res.ok && res.body?.code === 0) {
                 message.success(editingMethod ? 'Cập nhật thành công' : 'Thêm thành công');
@@ -60,7 +64,6 @@ const PaymentPage: React.FC = () => {
                 <Tabs.TabPane tab="Quản lí giao dịch" key="1">
                     <PaymentHistoryList
                         loading={loading}
-                        onShowFilter={() => setHistoryFilterVisible(true)}
                     />
                 </Tabs.TabPane>
                 {/* <Tabs.TabPane tab="Quản lí phương thức thanh toán" key="2">

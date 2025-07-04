@@ -27,9 +27,9 @@ const ShipmentList: React.FC<ShipmentListProps> = ({ loading }) => {
         try {
             const res = await shipmentApi.getShipments();
             if (res.ok && res.body?.code === 0) {
-                setData(res.body.data || []);
+                setData(res.body.data.shipments || []);
             } else {
-                message.error(res.body?.message || 'Lỗi khi lấy danh sách đơn hàng vận chuyển');
+                message.error('Lỗi khi lấy danh sách đơn hàng vận chuyển');
             }
         } catch (e) {
             message.error('Lỗi khi lấy danh sách đơn hàng vận chuyển');
@@ -87,7 +87,7 @@ const ShipmentList: React.FC<ShipmentListProps> = ({ loading }) => {
                 setEditingShipment(null);
                 fetchData();
             } else {
-                message.error(res.body?.message || 'Cập nhật thất bại');
+                message.error('Cập nhật thất bại');
             }
         } catch (e) {
             if (e instanceof Error) {

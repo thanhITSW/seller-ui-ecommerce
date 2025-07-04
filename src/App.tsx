@@ -19,14 +19,23 @@ import WithdrawRequestPage from './pages/WithdrawRequest';
 import ProductReviewManager from './pages/Product/ProductReviewManager';
 import ProductStatistics from './pages/Product/ProductStatistics';
 import OrderStatistics from './pages/Order/OrderStatistics';
+import ReturnedOrderPage from './pages/ReturnedOrder';
+import AccountInfo from './pages/User/AccountInfo';
 import ProtectedRoute from './components/Layout/ProtectedRoute';
 import { useEffect, useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { setLoginStatus, setStoreInfo, setUserDetails } from './redux/slices/authSlice';
+import PublicRoute from './components/Common/PublicRoute';
+import { requestFCMToken, onMessageListener } from './utils/firebaseUtils';
+import { notification } from 'antd';
+import { BellOutlined } from '@ant-design/icons';
+import { saveFcmToken } from './api/notificationApi';
+import NotificationList from './pages/Notification';
 
 function App() {
   const dispatch = useDispatch();
   const [isInitialized, setIsInitialized] = useState(false);
+  const [fcmToken, setFcmToken] = useState<string | null>(null);
 
   // Initialize auth state from localStorage on app load
   useEffect(() => {
@@ -34,6 +43,25 @@ function App() {
     const storeId = localStorage.getItem('store_id');
     const storeStatus = localStorage.getItem('store_status');
     const userJson = localStorage.getItem('user');
+
+    const fetchFCMToken = async () => {
+      try {
+        const token = await requestFCMToken();
+        setFcmToken(token);
+        // Gọi API lưu FCM token nếu có token và storeId
+        if (token && storeId) {
+          try {
+            await saveFcmToken({ token, store_id: storeId });
+          } catch (err) {
+            console.error('Error saving FCM token:', err);
+          }
+        }
+      } catch (error) {
+        console.error("Error fetching FCM token:", error);
+      }
+    };
+
+    fetchFCMToken();
 
     if (accessToken && storeId && storeStatus) {
       // Khôi phục thông tin người dùng
@@ -58,17 +86,32 @@ function App() {
     setIsInitialized(true);
   }, [dispatch]);
 
+  useEffect(() => {
+    const handleMessage = (payload: any) => {
+      notification.info({
+        message: payload.notification.title,
+        description: payload.notification.body,
+        icon: <BellOutlined />
+      });
+    };
+    onMessageListener(handleMessage);
+  }, []);
+
   // Hiển thị loading hoặc không hiển thị gì cho đến khi khởi tạo xong
   if (!isInitialized) {
     return null;
   }
 
+
+
   return (
     <Router>
       <Routes>
         {/* Public routes */}
-        <Route path="/register" element={<Register />} />
-        <Route path="/login" element={<LoginComponent />} />
+        <Route element={<PublicRoute />}>
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<LoginComponent />} />
+        </Route>
 
         {/* Main layout with store settings - accessible even if store is not active */}
         <Route element={<ProtectedRoute requireActiveStore={false} />}>
@@ -96,7 +139,10 @@ function App() {
             <Route path="orders" element={<OrderPage />} />
             <Route path="orders/statistics" element={<OrderStatistics />} />
             <Route path="orders/return-requests" element={<ReturnRequestPage />} />
+            <Route path="orders/returned-orders" element={<ReturnedOrderPage />} />
             <Route path="withdraw-requests" element={<WithdrawRequestPage />} />
+            <Route path="account-info" element={<AccountInfo />} />
+            <Route path="notifications" element={<NotificationList />} />
           </Route>
         </Route>
 

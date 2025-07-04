@@ -10,7 +10,7 @@ function getStoreId() {
 
 const withdrawRequestApi = {
     getWithdrawRequests: (params?: { page?: number; limit?: number; status?: string }): Promise<HttpResponse<{ code: number; message: string; data: WithdrawRequestListResponse }>> => {
-        const url = '/store/withdraw_requests';
+        const url = `/store/withdraw_requests?seller_id=${getStoreId()}`;
         return handleRequest(axiosClient.get(url, { params }));
     },
     createWithdrawRequest: (data: WithdrawRequestCreatePayload): Promise<HttpResponse<{ code: number; message: string; data: WithdrawRequest }>> => {

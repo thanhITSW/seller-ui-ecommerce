@@ -1,7 +1,7 @@
 import React from 'react';
 import { Table, Button, Space, Popconfirm } from 'antd';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { ProductType } from '../../../../types/ProductType';
+import { ProductType } from '../../../types/ProductType';
 import './styles.scss';
 
 interface ProductTypeListProps {

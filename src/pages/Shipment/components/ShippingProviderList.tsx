@@ -21,7 +21,7 @@ const ShippingProviderList = forwardRef<any, ShippingProviderListProps>(({ loadi
             if (res.ok && res.body?.code === 0) {
                 setData(res.body.data || []);
             } else {
-                message.error(res.body?.message || 'Lỗi khi lấy danh sách đơn vị vận chuyển');
+                message.error('Lỗi khi lấy danh sách đơn vị vận chuyển');
             }
         } catch (e) {
             message.error('Lỗi khi lấy danh sách đơn vị vận chuyển');

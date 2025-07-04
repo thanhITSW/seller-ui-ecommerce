@@ -63,6 +63,7 @@ const RegisterPharmacy: React.FC = () => {
   const [wardList, setWardList] = useState<any[]>([]);
   const [loadingDistrict, setLoadingDistrict] = useState(false);
   const [loadingWard, setLoadingWard] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     getProvinces().then((res) => {
@@ -128,7 +129,7 @@ const RegisterPharmacy: React.FC = () => {
   };
 
   const onFinish = async (values: any) => {
-
+    setLoading(true);
     try {
       // Đăng ký tài khoản user
       const userRes = await userApi.registerSeller({
@@ -207,6 +208,8 @@ const RegisterPharmacy: React.FC = () => {
     } catch (err: any) {
       console.error('Chi tiết lỗi:', err);
       message.error(err?.message || 'Đăng ký thất bại!');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -528,7 +531,7 @@ const RegisterPharmacy: React.FC = () => {
           </Collapse>
 
           <Form.Item style={{ marginTop: 32 }}>
-            <Button type="primary" htmlType="submit" size="large" block>
+            <Button type="primary" htmlType="submit" size="large" block loading={loading}>
               Đăng ký
             </Button>
           </Form.Item>

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Modal, Form, Input } from 'antd';
-import { Category } from '../../../../types/ProductType';
+import { Category } from '../../../types/ProductType';
 import './styles.scss';
 
 interface CategoryFormProps {

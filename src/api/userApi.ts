@@ -37,6 +37,45 @@ const userApi = {
     const url = '/user/users/registerSeller';
     return handleRequest(axiosClient.post(url, data));
   },
+
+  changePassword: (oldPassword: string, newPassword: string) => {
+    const url = '/user/users/change-password';
+    const accessToken = localStorage.getItem('accessToken');
+    return handleRequest(
+      axiosClient.post(
+        url,
+        { oldPassword, newPassword },
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      )
+    );
+  },
+
+  updateAvatar: (userId: string, file: File) => {
+    const url = `/user/users/${userId}/update-avatar`;
+    const accessToken = localStorage.getItem('accessToken');
+    const formData = new FormData();
+    formData.append('image', file);
+    return handleRequest(
+      axiosClient.post(url, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+    );
+  },
+
+  updateUserInfo: (data: { email: string; fullname: string; phone: string }) => {
+    const url = '/user/users/';
+    const accessToken = localStorage.getItem('accessToken');
+    return handleRequest(
+      axiosClient.put(url, data, {
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      })
+    );
+  },
 };
 
 export default userApi;

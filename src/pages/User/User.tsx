@@ -2,6 +2,7 @@ import React from 'react';
 import { Typography } from 'antd';
 import UserList from './components/UserList';
 import '@/styles/User/User.scss';
+import AccountInfo from './AccountInfo';
 
 const { Title } = Typography;
 
@@ -14,4 +15,5 @@ const UserPage: React.FC = () => {
     );
 };
 
-export default UserPage; 
+
+export default AccountInfo; 

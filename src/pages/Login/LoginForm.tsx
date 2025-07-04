@@ -30,7 +30,7 @@ interface LoginFormProps {
   handleFacebookLogin: () => void;
 }
 
-const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
+const LoginForm: React.FC<LoginFormProps> = () => {
   const [loading, setLoading] = useState<boolean>(false);
 
   const dispatch = useDispatch();
@@ -81,6 +81,15 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
       const { ok, body } = await authApi.login(loginPayload);
       if (ok && body?.data) {
         const { user, accessToken, refreshToken } = body.data;
+        // Chỉ cho phép role admin_seller hoặc staff_seller
+        if (user.role !== 'admin_seller' && user.role !== 'staff_seller') {
+          notification.error({
+            message: t('Không có thông tin tài khoản'),
+            description: t('Tài khoản của bạn không có quyền truy cập hệ thống này.'),
+          });
+          setLoading(false);
+          return;
+        }
         // Call API get store info by user_id
         const storeRes = await storeApi.getStoreByUserId(user.id);
         if (storeRes.ok && storeRes.body?.data) {
@@ -159,10 +168,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
 
         <div className="login-form-container">
           <h1 className="welcome-text">
-            Welcome To <span className="brand-name">Seller</span>
+            Chào mừng đến với trang quản lý <span className="brand-name">Cửa hàng</span>
           </h1>
           <p className="login-description">
-            Please sign-in to your account
+            Vui lòng đăng nhập vào tài khoản của bạn
           </p>
           <Col span={24}>
             <VerticalForm
@@ -178,7 +187,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
                 label={t("Email")}
                 id="emailOrUsername"
                 name="emailOrUsername"
-                placeholder="Enter Your Email Or User Name"
+                placeholder="Nhập email đăng nhập"
                 size="large"
                 maxLength={MAX_LENGTH.EMAIL}
                 rules={[
@@ -198,8 +207,8 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
                 name="password"
                 id="password"
                 size="large"
-                label={t("Password")}
-                placeholder={t("input.password.placeholder")}
+                label="Mật khẩu"
+                placeholder="Nhập mật khẩu"
                 maxLength={MAX_LENGTH.PASSWORD}
                 rules={[
                   {
@@ -210,7 +219,7 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
               />
 
               <SubmitButton
-                name="Sign In"
+                name="Đăng nhập"
                 buttonClassName="sign-in-button"
                 loading={loading}
               >
@@ -218,9 +227,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
 
               <div className="account-options">
                 <p>
-                  New on our platform? <a href="/signup">Create an account</a>
+                  Chưa có tài khoản? <a href="/register">Đăng ký</a>
                 </p>
-                <p className="or-divider">or</p>
+                {/* <p className="or-divider">or</p>
 
                 <div className="social-login">
                   <Button
@@ -237,93 +246,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ handleLogin }) => {
                     shape="circle"
                     className="social-button twitter"
                   />
-                </div>
+                </div> */}
               </div>
             </VerticalForm>
           </Col>
-
-          {/* <Form
-            className="login-form"
-            onFinish={formik.handleSubmit}
-            layout="vertical"
-          >
-            <Form.Item
-              label="Email Or Username"
-              validateStatus={
-                formik.touched.emailOrUsername && formik.errors.emailOrUsername
-                  ? "error"
-                  : ""
-              }
-              help={
-                formik.touched.emailOrUsername && formik.errors.emailOrUsername
-              }
-            >
-              <Input
-                id="emailOrUsername"
-                name="emailOrUsername"
-                placeholder="Enter Your Email Or User Name"
-                size="large"
-                value={formik.values.emailOrUsername}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-            </Form.Item>
-
-            <Form.Item
-              label="Password"
-              validateStatus={
-                formik.touched.password && formik.errors.password ? "error" : ""
-              }
-              help={formik.touched.password && formik.errors.password}
-            >
-              <Input.Password
-                id="password"
-                name="password"
-                placeholder="Enter Your Password"
-                size="large"
-                value={formik.values.password}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
-              />
-            </Form.Item>
-
-            <Form.Item>
-              <Button
-                type="primary"
-                size="large"
-                block
-                className="sign-in-button"
-                htmlType="submit"
-                loading={loading}
-              >
-                Sign In
-              </Button>
-            </Form.Item>
-
-            <div className="account-options">
-              <p>
-                New on our platform? <a href="/signup">Create an account</a>
-              </p>
-              <p className="or-divider">or</p>
-
-              <div className="social-login">
-                <Button
-                  shape="circle"
-                  className="social-button fa-brands fa-facebook-f facebook"
-                />
-                <Button
-                  icon={<GoogleOutlined />}
-                  shape="circle"
-                  className="social-button google"
-                />
-                <Button
-                  icon={<TwitterOutlined />}
-                  shape="circle"
-                  className="social-button twitter"
-                />
-              </div>
-            </div>
-          </Form> */}
         </div>
       </div>
     </div>

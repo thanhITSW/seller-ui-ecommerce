@@ -40,7 +40,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ loading }) => {
                     total: res.body.data.pagination.total,
                 });
             } else {
-                message.error(res.body?.message || 'Lỗi khi lấy danh sách giao dịch');
+                message.error('Lỗi khi lấy danh sách giao dịch');
             }
         } catch (e) {
             message.error('Lỗi khi lấy danh sách giao dịch');
@@ -80,7 +80,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ loading }) => {
                 setDetail(res.body.data);
                 setDetailVisible(true);
             } else {
-                message.error(res.body?.message || 'Không lấy được chi tiết giao dịch');
+                message.error('Không lấy được chi tiết giao dịch');
             }
         } catch (e) {
             message.error('Không lấy được chi tiết giao dịch');
@@ -114,7 +114,7 @@ const PaymentHistoryList: React.FC<PaymentHistoryListProps> = ({ loading }) => {
         { title: 'Order', dataIndex: 'order_id', key: 'order_id' },
         { title: 'User', dataIndex: 'user_id', key: 'user_id' },
         { title: 'Seller', dataIndex: 'seller_id', key: 'seller_id' },
-        { title: 'Phương thức', dataIndex: ['Payment_method', 'method_name'], key: 'method_name', render: (text, record) => <span>{record.Payment_method?.method_name}</span> },
+        { title: 'Phương thức', dataIndex: ['Payment_method', 'method_name'], key: 'method_name', render: (_, record) => <span>{record.Payment_method?.method_name}</span> },
         { title: 'Số tiền', dataIndex: 'amount', key: 'amount' },
         { title: 'Trạng thái', dataIndex: 'status', key: 'status', render: (status) => <Tag className={styles.statusTag + ' ' + styles[status]}>{status}</Tag> },
         { title: 'Ngày tạo', dataIndex: 'createdAt', key: 'createdAt', render: (text) => dayjs(text).format('YYYY-MM-DD HH:mm') },

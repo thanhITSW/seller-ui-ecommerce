@@ -25,7 +25,7 @@ const StorePaymentInfoList: React.FC<StorePaymentInfoListProps> = ({ onAdd, onEd
     const fetchData = async () => {
         setLoading(true);
         try {
-            const res = await withdrawRequestApi.getStorePaymentInfos('1');
+            const res = await withdrawRequestApi.getStorePaymentInfos();
             if (res.ok && res.body?.code === 0) {
                 setData(res.body.data);
             } else {

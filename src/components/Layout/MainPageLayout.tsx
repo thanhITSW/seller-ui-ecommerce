@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Button, Layout, Menu, Dropdown, Avatar, Tooltip, Select } from "antd";
+import { Button, Layout, Menu, Dropdown, Avatar, Tooltip, Select, Popover, Badge, List, Spin } from "antd";
 import {
   DashboardOutlined,
   LockOutlined,
@@ -31,6 +31,7 @@ import {
   ShopOutlined,
   CarOutlined,
   ShoppingCartOutlined,
+  CheckCircleOutlined,
 } from "@ant-design/icons";
 import { Link, Outlet, useNavigate } from "react-router-dom";
 import ukicon from "../../assets/uk-icon.svg";
@@ -41,6 +42,8 @@ import { useSelector } from "react-redux";
 import { RootState } from "@/redux/store";
 import { logout } from "@/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
+import { getNotifications, markNotificationAsRead } from '../../api/notificationApi';
+import { HttpResponse } from '../../types/http';
 
 const { Header, Sider, Content } = Layout;
 
@@ -71,6 +74,11 @@ const MainPageLayout: React.FC = () => {
   const currentStoreStatus = storeStatus || localStoreStatus;
 
   const [currentLang, setCurrentLang] = useState<Language>();
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [loadingNotifications, setLoadingNotifications] = useState(false);
+  const [notificationVisible, setNotificationVisible] = useState(false);
+
+  const unreadCount = notifications.filter(n => !n.is_read).length;
 
   const handleLanguageChange = (value: string) => {
     setCurrentLang(value as Language);
@@ -92,36 +100,110 @@ const MainPageLayout: React.FC = () => {
     navigate('/login');
   };
 
+  const fetchNotifications = async () => {
+    setLoadingNotifications(true);
+    try {
+      const res = await getNotifications() as unknown as HttpResponse<any>;
+      setNotifications(res.body?.data || []);
+    } catch (err) {
+      setNotifications([]);
+    } finally {
+      setLoadingNotifications(false);
+    }
+  };
+
+  useEffect(() => {
+    if (notificationVisible) {
+      fetchNotifications();
+    }
+  }, [notificationVisible]);
+
+  const handleMarkAsRead = async (notificationId: string) => {
+    try {
+      await markNotificationAsRead(notificationId);
+      fetchNotifications(); // Refresh list
+    } catch (err) {
+      // Optionally: show error
+    }
+  };
+
+  const handleSeeAllNotifications = () => {
+    navigate('/notifications');
+    setNotificationVisible(false);
+  };
+
+  const notificationContent = (
+    <div style={{ width: 350, maxHeight: 400, overflowY: 'auto' }}>
+      {loadingNotifications ? (
+        <Spin style={{ width: '100%', margin: '20px 0' }} />
+      ) : notifications.length === 0 ? (
+        <div style={{ textAlign: 'center', padding: 20 }}>Không có thông báo nào</div>
+      ) : (
+        <List
+          dataSource={notifications.slice(0, 4)}
+          renderItem={item => (
+            <List.Item style={{ background: item.is_read ? '#fff' : '#f6faff', borderRadius: 4, margin: 4 }}
+              actions={[
+                !item.is_read && (
+                  <CheckCircleOutlined
+                    key="mark-as-read"
+                    style={{ color: '#52c41a', cursor: 'pointer', fontSize: 18 }}
+                    title="Đánh dấu đã đọc"
+                    onClick={() => handleMarkAsRead(item.id)}
+                  />
+                )
+              ]}
+            >
+              <List.Item.Meta
+                title={<b>{item.title}</b>}
+                description={<>
+                  <div>{item.body}</div>
+                  <div style={{ fontSize: 12, color: '#888' }}>{item.created_at}</div>
+                </>}
+              />
+            </List.Item>
+          )}
+        />
+      )}
+      {notifications.length > 4 && (
+        <div style={{ textAlign: 'center', marginTop: 8 }}>
+          <Button type="link" onClick={handleSeeAllNotifications} style={{ padding: 0 }}>Xem tất cả</Button>
+        </div>
+      )}
+    </div>
+  );
+
   const userMenuItems = [
     {
       key: "profile",
       icon: <ProfileOutlined />,
-      label: "Profile",
+      label: "Thông tin tài khoản",
+      onClick: () => navigate('/account-info'),
     },
-    {
-      key: "inbox",
-      icon: <InboxOutlined />,
-      label: "Inbox",
-    },
-    {
-      key: "taskManager",
-      icon: <ScheduleOutlined />,
-      label: "Task Manager",
-    },
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "Settings",
-    },
-    {
-      key: "support",
-      icon: <QuestionCircleOutlined />,
-      label: "Support",
-    },
+    // {
+    //   key: "inbox",
+    //   icon: <InboxOutlined />,
+    //   label: "Inbox",
+    // },
+    // {
+    //   key: "taskManager",
+    //   icon: <ScheduleOutlined />,
+    //   label: "Task Manager",
+    // },
+    // {
+    //   key: "settings",
+    //   icon: <SettingOutlined />,
+    //   label: "Settings",
+    // },
+    // {
+    //   key: "support",
+    //   icon: <QuestionCircleOutlined />,
+    //   label: "Support",
+    // },
     {
       key: "logout",
       icon: <CloseCircleOutlined />,
-      label: "Logout",
+      label: "Đăng xuất",
       onClick: handleLogout,
     },
   ];
@@ -166,13 +248,21 @@ const MainPageLayout: React.FC = () => {
               onClick={toggleTheme}
             />
           </Tooltip>
-          <Tooltip title="Notifications">
-            <Button
-              type="text"
-              icon={<BellFilled />}
-              className="notification-btn"
-            />
-          </Tooltip>
+          <Popover
+            content={notificationContent}
+            trigger="click"
+            open={notificationVisible}
+            onOpenChange={setNotificationVisible}
+            placement="bottomRight"
+          >
+            <Badge count={unreadCount} overflowCount={99} size="small">
+              <Button
+                type="text"
+                icon={<BellFilled />}
+                className="notification-btn"
+              />
+            </Badge>
+          </Popover>
           <Dropdown
             menu={{ items: userMenuItems }}
             placement="bottomRight"
@@ -236,16 +326,17 @@ const MainPageLayout: React.FC = () => {
                   <Menu.SubMenu key="order" icon={<CarOutlined />} title="Đơn hàng">
                     <Menu.Item key="orderManagement"><Link to="/orders">Quản lí đơn hàng</Link></Menu.Item>
                     <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Yêu cầu trả hàng</Link></Menu.Item>
+                    <Menu.Item key="returnedOrder"><Link to="/orders/returned-orders">Đơn hàng đã trả lại</Link></Menu.Item>
                     <Menu.Item key="orderStatistics"><Link to="/orders/statistics">Thống kê đơn hàng</Link></Menu.Item>
                   </Menu.SubMenu>
                   {/* <Menu.Item key="underMaintenance" icon={<ToolOutlined />}>
                     Under Maintenance
                   </Menu.Item> */}
                   <Menu.Item key="userProfile" icon={<UserOutlined />}>
-                    Thông tin tài khoản
+                    <Link to="/account-info">Thông tin tài khoản</Link>
                   </Menu.Item>
                   <Menu.Item key="notifications" icon={<BellOutlined />}>
-                    Thông báo
+                    <Link to="/notifications">Thông   báo</Link>
                   </Menu.Item>
                   {/* <Menu.Item key="contacts" icon={<ContactsOutlined />}>
                     Contacts
@@ -253,9 +344,9 @@ const MainPageLayout: React.FC = () => {
                   <Menu.Item key="faq" icon={<QuestionCircleOutlined />}>
                     Faq
                   </Menu.Item> */}
-                  <Menu.Item key="accountSettings" icon={<SettingOutlined />}>
+                  {/* <Menu.Item key="accountSettings" icon={<SettingOutlined />}>
                     Account settings
-                  </Menu.Item>
+                  </Menu.Item> */}
                 </>
               )}
             </Menu>

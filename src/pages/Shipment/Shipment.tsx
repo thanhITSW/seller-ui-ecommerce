@@ -15,7 +15,7 @@ const ShipmentPage: React.FC = () => {
     const [loading, setLoading] = useState(false);
     const [providerFormVisible, setProviderFormVisible] = useState(false);
     const [editingProvider, setEditingProvider] = useState<ShippingProvider | null>(null);
-    const providerListRef = useRef<any>();
+    const providerListRef = useRef<any>(null);
 
     const handleAddProvider = () => {
         setEditingProvider(null);
@@ -42,7 +42,7 @@ const ShipmentPage: React.FC = () => {
                 setEditingProvider(null);
                 providerListRef.current?.fetchData();
             } else {
-                message.error(res.body?.message || 'Lỗi');
+                message.error('Lỗi');
             }
         } catch (e) {
             message.error('Lỗi');
@@ -75,7 +75,6 @@ const ShipmentPage: React.FC = () => {
                     </div>
                     <ShippingProviderList
                         loading={loading}
-                        onAdd={handleAddProvider}
                         onEdit={handleEditProvider}
                         ref={providerListRef}
                     />
