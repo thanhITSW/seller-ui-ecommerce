@@ -57,6 +57,7 @@ export interface Shipment {
 export interface OrderDetail extends Order {
     shipment?: Shipment;
     user?: User;
+    items?: any[]; // Thêm field này để UI không lỗi khi gán động
 }
 
 export interface DetailedOrderListResponse {

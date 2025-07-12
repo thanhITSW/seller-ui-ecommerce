@@ -132,6 +132,23 @@
     margin-top: 24px;
 }
 
+.order-list-header {
+    background: var(--card-background);
+    border-radius: 8px 8px 0 0;
+    padding: 4px 0 4px 0;
+    margin-bottom: 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #888;
+
+    .ant-col {
+        display: flex;
+        align-items: center;
+        height: 32px;
+        padding-left: 0;
+    }
+}
+
 .order-card {
     margin-bottom: 16px;
     border-radius: 10px;
@@ -174,6 +191,24 @@
     .ant-timeline {
         margin-top: 8px;
     }
+}
+
+.product-other-count {
+    color: #888;
+    font-size: 13px;
+    margin-top: 2px;
+    font-style: italic;
+}
+
+.product-title {
+    font-weight: 500;
+    font-size: 15px;
+    color: var(--text-color);
+}
+
+.product-variation {
+    font-size: 13px;
+    color: #888;
 }
 
 @media screen and (max-width: 768px) {

@@ -55,6 +55,14 @@ const storeApi = {
             headers: { 'Content-Type': 'multipart/form-data' }
         }));
     },
+    addUserSellerAccess: (user_id: string, store_id: string): Promise<HttpResponse<any>> => {
+        const url = '/store/user_seller_access';
+        return handleRequest(axiosClient.post(url, { user_id, store_id }));
+    },
+    deleteUserSellerAccess: (user_id: string): Promise<HttpResponse<any>> => {
+        const url = `/store/user_seller_access/${user_id}`;
+        return handleRequest(axiosClient.delete(url));
+    },
 };
 
 export default storeApi; 

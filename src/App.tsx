@@ -130,7 +130,7 @@ function App() {
             <Route path="products/type" element={<ProductTypePage />} />
             <Route path="products/reviews" element={<ProductReviewManager />} />
             <Route path="products/statistics" element={<ProductStatistics />} />
-            <Route path="customers" element={<UserPage />} />
+            <Route path="accounts" element={<UserPage />} />
             <Route path="promotions" element={<PromotionPage />} />
             <Route path="promotions/product" element={<ProductPromotionManager />} />
             <Route path="vouchers" element={<VoucherPage />} />

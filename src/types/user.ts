@@ -19,6 +19,8 @@ export interface User {
   status: 'active' | 'inactive';
   createdAt: string;
   updatedAt: string;
+  access_status?: 'active' | 'inactive';
+  access_id?: string;
 }
 
 export interface UserFormData {

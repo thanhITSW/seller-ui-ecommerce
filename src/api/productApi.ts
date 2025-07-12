@@ -102,7 +102,7 @@ const productApi = {
                 .filter(([_, v]) => v)
                 .map(([k, v]) => `${encodeURIComponent(k)}=${encodeURIComponent(v as string)}`)
                 .join('&');
-            if (query) url += `?${query}`;
+            if (query) url += (url.includes('?') ? '&' : '?') + query;
         }
         return handleRequest(axiosClient.get(url));
     },

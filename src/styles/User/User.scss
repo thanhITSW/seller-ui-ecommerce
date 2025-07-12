@@ -5,9 +5,15 @@
     background-color: var(--background-color);
     color: var(--text-color);
 
-    h2.ant-typography {
-        margin-bottom: 24px;
-        color: var(--text-color);
+    .account-management {
+        h2.ant-typography {
+            margin-bottom: 24px;
+            color: var(--text-color);
+        }
+
+        .ant-btn-primary {
+            margin-left: auto;
+        }
     }
 
     .ant-table-wrapper {
@@ -85,9 +91,11 @@
     .user-page {
         padding: 16px;
 
-        h2.ant-typography {
-            font-size: 20px;
-            margin-bottom: 16px;
+        .account-management {
+            h2.ant-typography {
+                font-size: 20px;
+                margin-bottom: 16px;
+            }
         }
 
         .ant-table-wrapper {

@@ -8,13 +8,18 @@ const userApi = {
     return handleRequest(axiosClient.get(url, { params }));
   },
 
+  getUsersByStoreId: (storeId: string, params?: { search?: string; status?: string }): Promise<HttpResponse<{ code: number; message: string; data: User[] }>> => {
+    const url = '/user/users/store';
+    return handleRequest(axiosClient.get(url, { params: { store_id: storeId, ...params } }));
+  },
+
   getUserById: (id: string): Promise<HttpResponse<{ code: number; message: string; data: User }>> => {
     const url = `/user/users/${id}`;
     return handleRequest(axiosClient.get(url));
   },
 
   updateUser: (id: string, data: UserFormData): Promise<HttpResponse<{ code: number; message: string; data: User }>> => {
-    const url = `/user/users/editCustomer/${id}`;
+    const url = `/user/users/account/${id}`;
     return handleRequest(axiosClient.put(url, data));
   },
 
@@ -75,6 +80,11 @@ const userApi = {
         },
       })
     );
+  },
+
+  createAccount: (data: { email: string; fullname: string; phone: string; password: string; role: string; status?: string }): Promise<HttpResponse<{ code: number; message: string; data: User }>> => {
+    const url = '/user/users/account';
+    return handleRequest(axiosClient.post(url, data));
   },
 };
 

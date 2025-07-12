@@ -6,7 +6,7 @@ import './styles.scss';
 interface UserFormProps {
     visible: boolean;
     onCancel: () => void;
-    onSubmit: (data: UserFormData) => Promise<void>;
+    onSubmit: (data: UserFormData & { role?: string, password?: string }) => Promise<void>;
     initialValues?: User;
     loading?: boolean;
 }
@@ -21,6 +21,7 @@ const UserForm: React.FC<UserFormProps> = ({
     loading = false,
 }) => {
     const [form] = Form.useForm();
+    const isEditMode = !!initialValues;
 
     useEffect(() => {
         if (visible && initialValues) {
@@ -29,6 +30,7 @@ const UserForm: React.FC<UserFormProps> = ({
                 fullname: initialValues.fullname,
                 phone: initialValues.phone,
                 status: initialValues.status,
+                role: initialValues.role,
             });
         } else {
             form.resetFields();
@@ -47,12 +49,14 @@ const UserForm: React.FC<UserFormProps> = ({
 
     return (
         <Modal
-            title="Edit User"
+            title={isEditMode ? "Chỉnh sửa tài khoản" : "Thêm tài khoản mới"}
             open={visible}
             onCancel={onCancel}
             onOk={handleSubmit}
             confirmLoading={loading}
             width={600}
+            okText={isEditMode ? "Cập nhật" : "Thêm mới"}
+            cancelText="Hủy"
         >
             <Form
                 form={form}
@@ -63,40 +67,64 @@ const UserForm: React.FC<UserFormProps> = ({
                     name="email"
                     label="Email"
                     rules={[
-                        { required: true, message: 'Please input the email!' },
-                        { type: 'email', message: 'Please input a valid email!' }
+                        { required: true, message: 'Vui lòng nhập email!' },
+                        { type: 'email', message: 'Email không hợp lệ!' }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
+                {!isEditMode && (
+                    <Form.Item
+                        name="password"
+                        label="Mật khẩu"
+                        rules={[
+                            { required: true, message: 'Vui lòng nhập mật khẩu!' },
+                            { min: 6, message: 'Mật khẩu phải có ít nhất 6 ký tự!' }
+                        ]}
+                    >
+                        <Input.Password />
+                    </Form.Item>
+                )}
+
                 <Form.Item
                     name="fullname"
-                    label="Full Name"
-                    rules={[{ required: true, message: 'Please input the full name!' }]}
+                    label="Họ và tên"
+                    rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
                     name="phone"
-                    label="Phone Number"
+                    label="Số điện thoại"
                     rules={[
-                        { required: true, message: 'Please input the phone number!' },
-                        { pattern: /^[0-9]{10}$/, message: 'Please input a valid phone number!' }
+                        { required: true, message: 'Vui lòng nhập số điện thoại!' },
+                        { pattern: /^[0-9]{10}$/, message: 'Số điện thoại không hợp lệ!' }
                     ]}
                 >
                     <Input />
                 </Form.Item>
 
                 <Form.Item
-                    name="status"
-                    label="Status"
-                    rules={[{ required: true, message: 'Please select the status!' }]}
+                    name="role"
+                    label="Vai trò"
+                    rules={[{ required: true, message: 'Vui lòng chọn vai trò!' }]}
                 >
                     <Select>
-                        <Option value="active">Active</Option>
-                        <Option value="inactive">Inactive</Option>
+                        <Option value="admin_seller">Chủ cửa hàng</Option>
+                        <Option value="staff_seller">Nhân viên cửa hàng</Option>
+                    </Select>
+                </Form.Item>
+
+                <Form.Item
+                    name="status"
+                    label="Trạng thái"
+                    rules={[{ required: true, message: 'Vui lòng chọn trạng thái!' }]}
+                >
+                    <Select>
+                        <Option value="active">Hoạt động</Option>
+                        <Option value="inactive">Vô hiệu</Option>
                     </Select>
                 </Form.Item>
             </Form>

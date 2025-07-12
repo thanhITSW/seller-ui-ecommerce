@@ -116,3 +116,30 @@ export interface ProductStatistics {
     profit: number;
     profit_margin: string;
 } 
+
+export interface ProductStatisticsApiResponse {
+    code: number;
+    message: string;
+    data: ProductStatistics[];
+    overview?: any;
+} 
+
+export interface ProductStatisticsOverview {
+    total_orders: number;
+    total_customers: number;
+    total_products_sold: number;
+    total_revenue: number;
+    total_profit: number;
+    top_5_best_selling_products: Array<{
+        product_id: string;
+        name: string;
+        url_image: string;
+        import_price: string;
+        retail_price: string;
+        quantity_sold: number;
+        cost: number;
+        revenue: number;
+        profit: number;
+        profit_margin: string;
+    }>;
+} 

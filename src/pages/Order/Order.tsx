@@ -91,10 +91,23 @@ const OrderPage: React.FC = () => {
                 params.startDate = dateRange[0].format('YYYY-MM-DD');
                 params.endDate = dateRange[1].format('YYYY-MM-DD');
             }
-            console.log(params);
             const res = await orderApi.getDetailedOrders(params);
             if (res.ok && res.body && res.body.code === 0) {
-                setOrders(res.body.data);
+                // Fetch chi tiết sản phẩm cho từng order
+                const ordersWithProducts = await Promise.all(
+                    res.body.data.map(async (order: any) => {
+                        try {
+                            const detailRes = await orderApi.getOrderDetails(order.id);
+                            return {
+                                ...order,
+                                items: detailRes.ok && detailRes.body && Array.isArray(detailRes.body.data) ? detailRes.body.data : [],
+                            };
+                        } catch {
+                            return { ...order, items: [] };
+                        }
+                    })
+                );
+                setOrders(ordersWithProducts);
                 setStatusCount(res.body.statusCount || {});
             } else {
                 notification.error({ message: res.body?.message || 'Lỗi lấy danh sách đơn hàng' });
@@ -250,12 +263,19 @@ const OrderPage: React.FC = () => {
                 <Button onClick={handleResetFilters}>Làm mới</Button>
             </div>
             <div className="order-list">
+                {/* Header titles for order list */}
+                <Row align="middle" gutter={16} wrap={false} className="order-list-header">
+                    <Col flex="none" style={{ minWidth: 80, textAlign: 'center' }}>Người mua</Col>
+                    <Col flex="auto" style={{ marginLeft: 50 }}>Sản phẩm</Col>
+                    <Col flex="none" style={{ minWidth: 200 }}>Trạng thái đơn hàng</Col>
+                    <Col flex="none" style={{ minWidth: 200 }}>Vận chuyển</Col>
+                    <Col flex="none" style={{ minWidth: 140, textAlign: 'center' }}>Thao tác</Col>
+                </Row>
                 {loading ? <div style={{ textAlign: 'center', margin: 40 }}>Đang tải...</div> : (
                     orders.length === 0 ? <div style={{ textAlign: 'center', margin: 40 }}>Không có đơn hàng nào</div> : (
                         orders.map(order => {
-                            // Lấy sản phẩm đầu tiên và tổng số sản phẩm
-                            const firstProduct = orderProducts[0] || null;
-                            const productCount = order.total_quantity;
+                            const firstProduct = order.items?.[0] || null;
+                            const productCount = order.items?.length || 0;
                             return (
                                 <Card className="order-card" bordered key={order.id}>
                                     <Row align="middle" gutter={16} wrap={false}>
@@ -273,7 +293,7 @@ const OrderPage: React.FC = () => {
                                                 <Col flex="auto">
                                                     <div className="product-title">{firstProduct?.product_name || '---'}</div>
                                                     <div className="product-variation">{firstProduct?.variation || ''}</div>
-                                                    {productCount > 1 && <div style={{ color: '#888', fontSize: 13 }}>và {productCount - 1} sản phẩm khác...</div>}
+                                                    {productCount > 1 && <div className="product-other-count">và {productCount - 1} sản phẩm khác...</div>}
                                                 </Col>
                                                 <Col flex="none" style={{ textAlign: 'right' }}>
                                                     <div style={{ fontWeight: 600, color: '#d4380d' }}>{firstProduct ? Number(firstProduct.product_price).toLocaleString() + '₫' : ''}</div>

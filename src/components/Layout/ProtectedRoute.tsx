@@ -17,6 +17,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireActiveStore = tr
     // Kiểm tra trạng thái đăng nhập từ cả Redux và localStorage
     const accessToken = localStorage.getItem('accessToken');
     const localStoreStatus = localStorage.getItem('store_status');
+    const userJson = localStorage.getItem('user');
+    let userRole = '';
+    if (userJson) {
+        try {
+            userRole = JSON.parse(userJson).role;
+        } catch { }
+    }
 
     const isAuthenticated = isLoggedIn || !!accessToken;
     const currentStoreStatus = storeStatus || localStoreStatus;
@@ -35,6 +42,17 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ requireActiveStore = tr
     // Check if user is logged in
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
+    }
+
+    // Chặn staff_seller truy cập các route bị cấm
+    const forbiddenForStaff = [
+        '/accounts',
+        '/payments',
+        '/withdraw-requests',
+        '/stores',
+    ];
+    if (userRole === 'staff_seller' && forbiddenForStaff.some(path => location.pathname.startsWith(path))) {
+        return <Navigate to="/orders" replace />;
     }
 
     // If route requires active store and store is not active

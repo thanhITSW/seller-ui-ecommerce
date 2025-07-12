@@ -68,6 +68,7 @@ const MainPageLayout: React.FC = () => {
 
   const { isLoggedIn, storeStatus } = useSelector((state: RootState) => state.auth);
   const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const isStaff = user.role === 'staff_seller';
 
   const localStoreStatus = localStorage.getItem('store_status');
   const localStore = JSON.parse(localStorage.getItem('store') || '{}');
@@ -180,26 +181,6 @@ const MainPageLayout: React.FC = () => {
       label: "Thông tin tài khoản",
       onClick: () => navigate('/account-info'),
     },
-    // {
-    //   key: "inbox",
-    //   icon: <InboxOutlined />,
-    //   label: "Inbox",
-    // },
-    // {
-    //   key: "taskManager",
-    //   icon: <ScheduleOutlined />,
-    //   label: "Task Manager",
-    // },
-    // {
-    //   key: "settings",
-    //   icon: <SettingOutlined />,
-    //   label: "Settings",
-    // },
-    // {
-    //   key: "support",
-    //   icon: <QuestionCircleOutlined />,
-    //   label: "Support",
-    // },
     {
       key: "logout",
       icon: <CloseCircleOutlined />,
@@ -300,12 +281,19 @@ const MainPageLayout: React.FC = () => {
           <div className="sidebar-section">
             <div className="sidebar-section-title">PAGES</div>
             <Menu mode="inline" defaultSelectedKeys={["errorPage"]}>
-              <Menu.Item key="storeManagement" icon={<ShopOutlined />}>
-                <Link to="/stores">Cài đặt cửa hàng</Link>
-              </Menu.Item>
+              {!isStaff && (
+                <Menu.Item key="storeManagement" icon={<ShopOutlined />}>
+                  <Link to="/stores">Cài đặt cửa hàng</Link>
+                </Menu.Item>
+              )}
 
               {currentStoreStatus === 'active' && (
                 <>
+                  {!isStaff && (
+                    <Menu.Item key="accounts" icon={<UserOutlined />}>
+                      <Link to="/accounts">Quản lí tài khoản</Link>
+                    </Menu.Item>
+                  )}
                   <Menu.SubMenu key="product" icon={<ShoppingOutlined />} title="Quản lí sản phẩm">
                     <Menu.Item key="productManagement"><Link to="/products">Tất cả sản phẩm</Link></Menu.Item>
                     <Menu.Item key="suggestionProduct"><Link to="/products/suggestion">Đề xuất sản phẩm mới</Link></Menu.Item>
@@ -319,10 +307,12 @@ const MainPageLayout: React.FC = () => {
                   <Menu.SubMenu key="customer" icon={<CommentOutlined />} title="Chăm sóc khách hàng">
                     <Menu.Item key="customerReview"><Link to="/products/reviews">Quản lí đánh giá</Link></Menu.Item>
                   </Menu.SubMenu>
-                  <Menu.SubMenu key="payment" icon={<MoneyCollectOutlined />} title="Thanh toán">
-                    <Menu.Item key="paymentManagement"><Link to="/payments">Quản lí thanh toán</Link></Menu.Item>
-                    <Menu.Item key="withdraw"><Link to="/withdraw-requests">Quản lí rút tiền</Link></Menu.Item>
-                  </Menu.SubMenu>
+                  {!isStaff && (
+                    <Menu.SubMenu key="payment" icon={<MoneyCollectOutlined />} title="Thanh toán">
+                      <Menu.Item key="paymentManagement"><Link to="/payments">Quản lí thanh toán</Link></Menu.Item>
+                      <Menu.Item key="withdraw"><Link to="/withdraw-requests">Quản lí rút tiền</Link></Menu.Item>
+                    </Menu.SubMenu>
+                  )}
                   <Menu.SubMenu key="order" icon={<CarOutlined />} title="Đơn hàng">
                     <Menu.Item key="orderManagement"><Link to="/orders">Quản lí đơn hàng</Link></Menu.Item>
                     <Menu.Item key="RequestOrderReturn"><Link to="/orders/return-requests">Yêu cầu trả hàng</Link></Menu.Item>
