@@ -273,11 +273,11 @@ const MainPageLayout: React.FC = () => {
               </div>
             </div>
           </Dropdown>
-          <Button
+          {/* <Button
             type="text"
             icon={<SettingOutlined />}
             className="settings-btn"
-          />
+          /> */}
         </div>
       </Header>
       <Layout>

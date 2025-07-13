@@ -325,6 +325,9 @@ const ProductList: React.FC = () => {
                         <Descriptions.Item label="Hình ảnh">
                             <Image src={selectedProduct.url_image} alt="product" width={120} />
                         </Descriptions.Item>
+                        <Descriptions.Item label="Ảnh hóa đơn nhập kho">
+                            <Image src={selectedProduct.url_import_invoice} alt="import-invoice" width={120} />
+                        </Descriptions.Item>
                         <Descriptions.Item label="Thương hiệu">{selectedProduct.brand}</Descriptions.Item>
                         <Descriptions.Item label="Giá nhập">{Number(selectedProduct.import_price).toLocaleString()}₫</Descriptions.Item>
                         <Descriptions.Item label="Giá bán lẻ">{Number(selectedProduct.retail_price).toLocaleString()}₫</Descriptions.Item>

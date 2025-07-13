@@ -62,6 +62,7 @@ export interface ProductApi {
     active_status: string;
     url_image: string;
     url_registration_license: string;
+    url_import_invoice?: string;
     product_type_id: string;
     category_id: string;
     import_date?: string;
@@ -115,14 +116,14 @@ export interface ProductStatistics {
     revenue: number;
     profit: number;
     profit_margin: string;
-} 
+}
 
 export interface ProductStatisticsApiResponse {
     code: number;
     message: string;
     data: ProductStatistics[];
     overview?: any;
-} 
+}
 
 export interface ProductStatisticsOverview {
     total_orders: number;
