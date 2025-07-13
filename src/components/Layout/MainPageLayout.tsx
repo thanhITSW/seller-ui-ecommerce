@@ -44,6 +44,7 @@ import { logout } from "@/redux/slices/authSlice";
 import { useDispatch } from "react-redux";
 import { getNotifications, markNotificationAsRead } from '../../api/notificationApi';
 import { HttpResponse } from '../../types/http';
+import { onMessageListener } from '../../utils/firebaseUtils';
 
 const { Header, Sider, Content } = Layout;
 
@@ -89,6 +90,20 @@ const MainPageLayout: React.FC = () => {
   useEffect(() => {
     setCurrentLang(language);
   }, [language]);
+
+  // Fetch notifications ngay khi mount
+  useEffect(() => {
+    fetchNotifications();
+  }, []);
+
+  // Khi có notification real-time, fetch lại danh sách
+  useEffect(() => {
+    const handler = () => {
+      fetchNotifications();
+    };
+    onMessageListener(handler);
+    return () => { };
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('user');
